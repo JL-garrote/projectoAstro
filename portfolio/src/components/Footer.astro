@@ -1,0 +1,126 @@
+---
+const tituloFooter = "JL-Garrote";
+
+const opcionesFooter = [
+	{ label: "GitHub", href: "/" },
+	{ label: "LinkedIn", href: "/projects" },
+];
+---
+
+<footer class="site-footer">
+	<h1 class="logo-footer">{tituloFooter}</h1>
+
+	<div class="navigation-footer">
+		<nav>
+			<ul>
+				{
+					opcionesFooter.map((opcion) => (
+						<li>
+							<a href={opcion.href}> {opcion.label}</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+	</div>
+</footer>
+
+<style>
+    /* Contenedor Principal del Footer */
+    .site-footer {
+        display: flex;
+        justify-content: space-between; /* Separa el logo, el centro y el botón */
+        align-items: center;
+        padding: var(--gap-md) var(--margin-desktop);
+        background-color: var(--surface-container-lowest); /* Fondo oscuro según tu paleta */
+        border-top: 1px solid var(--outline-variant); /* Línea superior */
+    }
+
+    /* Estilos del Logo Izquierdo */
+    .logo-footer {
+        color: var(--on-surface);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 14px;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: 0.05em;
+    }
+
+    /* Contenedor del Centro (Copyright + Menú) */
+    .footer-content {
+        display: flex;
+        align-items: center;
+        gap: var(--gap-xl); /* Espacio amplio entre texto legal y enlaces */
+        margin-left: auto; /* Empuja este bloque hacia la derecha */
+        margin-right: var(--gap-xl); /* Separación antes del botón del email */
+    }
+
+    /* Texto de Copyright */
+    .copyright {
+        color: var(--primary-fixed-dim); /* Tono verde/cyan sutil */
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        letter-spacing: 0.02em;
+        margin: 0;
+    }
+
+    /* Lista de Navegación del Footer */
+    .navigation-footer ul {
+        display: flex;
+        gap: var(--gap-md); /* Espacio entre links */
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Enlaces individuales */
+    .navigation-footer a {
+        color: var(--on-surface-variant);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .navigation-footer a:hover {
+        color: var(--primary);
+    }
+
+    /* Botón Cuadrado del Email (Extremo Derecho) */
+    .btn-email {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 44px;
+        height: 44px;
+        background-color: var(--primary);
+        color: var(--on-primary);
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-email:hover {
+        filter: brightness(1.1);
+        box-shadow: 0 0 15px rgba(0, 255, 156, 0.4);
+    }
+
+    /* Responsive para móviles */
+    @media (max-width: 900px) {
+        .site-footer {
+            flex-direction: column;
+            gap: var(--gap-md);
+            text-align: center;
+            padding: var(--gap-md) 20px;
+        }
+        .footer-content {
+            flex-direction: column;
+            margin: 0;
+            gap: var(--gap-md);
+        }
+        .navigation-footer ul {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    }
+</style>

@@ -1,0 +1,257 @@
+---
+// Datos de tus proyectos (puedes editarlos, añadir o quitar fácilmente)
+const proyectos = [
+  {
+    tagTop: "v1.4.0-stable",
+    title: "Team Pulse",
+    description: "Sistema hecho para la gestion de escuelas deportivas de cualquier deporte",
+    tags: ["#Astro.js", "#Java", "#Spring Boot", "#REST API"],
+    linkSource: "#",
+    linkLive: "#",
+    image: "/assets/project1.jpg",
+    iconType: "code"
+  },
+  {
+    tagTop: "production",
+    title: "Net_Architect",
+    description: "Visual infrastructure-as-code designer. Automatically maps complex AWS deployments into interactive 3D nodes.",
+    tags: ["#TypeScript", "#ThreeJS", "#AWS"],
+    linkSource: "#",
+    linkLive: "#",
+    image: "/assets/project2.jpg",
+    iconType: "sparkle"
+  },
+  {
+    tagTop: "v1.0.2",
+    title: "Vault_OS",
+    description: "Open-source zero-trust authentication layer with hardware-level encryption support for enterprise web apps.",
+    tags: ["#Go", "#Docker", "#Redis"],
+    linkSource: "#",
+    linkLive: "#",
+    image: "/assets/project3.jpg",
+    iconType: "shield"
+  },
+];
+---
+
+<section id="projects" class="projects-section">
+  <div class="projects-grid">
+    {proyectos.map((project) => (
+      <div class="project-card">
+        
+        <div class="card-image-wrapper">
+          <span class="project-status-tag text-code-md">{project.tagTop}</span>
+          <img src={project.image} alt={`Preview de ${project.title}`} />
+        </div>
+
+        <div class="card-content">
+          <div class="card-title-row">
+            <h3>{project.title}</h3>
+            
+            {project.iconType === "code" && (
+              <svg class="tech-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            )}
+            {project.iconType === "sparkle" && (
+              <svg class="tech-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            )}
+            {project.iconType === "shield" && (
+              <svg class="tech-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            )}
+            {project.iconType === "cpu" && (
+              <svg class="tech-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 15h3M1 9h3M1 15h3"></path></svg>
+            )}
+          </div>
+
+          <p class="project-description">{project.description}</p>
+
+          <div class="project-tags">
+            {project.tags.map((tag) => (
+              <span class="tag text-code-md">{tag}</span>
+            ))}
+          </div>
+
+          <hr class="card-divider" />
+
+          <div class="card-links text-code-md">
+            <a href={project.linkSource} class="link-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              SOURCE_CODE
+            </a>
+            <a href={project.linkLive} class="link-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              INTERACTIVE_PREVIEW
+            </a>
+          </div>
+        </div>
+
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .projects-section {
+    width: 100%;
+    background-color: transparent;
+  }
+
+  /* Grid elástico idéntico a Figma (3 columnas que bajan a 2 y 1 automáticamente) */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gap-md);
+  }
+
+  /* Estilos base de la tarjeta */
+  .project-card {
+    border: 1px solid var(--outline-variant);
+    background-color: rgba(26, 28, 28, 0.4);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .project-card:hover {
+    border-color: rgba(0, 255, 156, 0.3);
+  }
+
+  /* Imagen y etiqueta superior */
+  .card-image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-bottom: 1px solid var(--outline-variant);
+  }
+
+  .card-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.7) contrast(1.1);
+    transition: filter 0.2s ease;
+  }
+
+  .project-card:hover .card-image-wrapper img {
+    filter: brightness(0.85) contrast(1.1);
+  }
+
+  /* Tag flotante estilo terminal */
+  .project-status-tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background-color: var(--surface-container-lowest);
+    border: 1px solid var(--outline-variant);
+    color: var(--primary);
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    z-index: 2;
+    letter-spacing: 0.05em;
+  }
+
+  /* Contenido interno */
+  .card-content {
+    padding: var(--gap-md);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .card-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .card-title-row h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+  }
+
+  .tech-icon {
+    color: var(--primary);
+    filter: drop-shadow(0 0 4px rgba(0, 255, 156, 0.4));
+  }
+
+  .project-description {
+    color: var(--on-surface-variant);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0 0 16px 0;
+    flex: 1; /* Hace que todas las tarjetas midan lo mismo aunque el texto varíe */
+  }
+
+  /* Envase de tags inferiores */
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .tag {
+    border: 1px solid var(--outline-variant);
+    color: var(--on-surface-variant);
+    padding: 4px 10px;
+    font-size: 12px;
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+
+  .card-divider {
+    border: 0;
+    border-top: 1px solid var(--outline-variant);
+    margin: 0 0 16px 0;
+    width: 100%;
+    opacity: 0.5;
+  }
+
+  /* Enlaces inferiores */
+  .card-links {
+    display: flex;
+    gap: var(--gap-md);
+  }
+
+  .link-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--on-surface);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    transition: color 0.15s ease;
+  }
+
+  .link-item svg {
+    color: var(--on-surface-variant);
+    transition: color 0.15s ease;
+  }
+
+  .link-item:hover {
+    color: var(--primary);
+  }
+
+  .link-item:hover svg {
+    color: var(--primary);
+  }
+
+  /* --- RESPONSIVE --- */
+  @media (max-width: 1024px) {
+    .projects-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 680px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,848 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Proyectos from '../components/proyectos.astro';
+
+const imagenEntorno = "/assets/entorno.jpg";
+---
+
+<Layout title="Inicio">
+
+    <!-- Cursor personalizado -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
+
+    <!-- Scanline de entrada -->
+    <div class="scanline" id="scanline"></div>
+
+    <!-- Overlay de ruido -->
+    <div class="noise"></div>
+
+    <section id="hero" class="hero-container">
+
+        <div class="hero-text-content">
+            <div class="system-status" id="sys-status">
+                <span class="status-dot" id="status-dot"></span>
+                <span class="text-code-md">SYSTEM STATUS: OPERATIONAL</span>
+            </div>
+
+            <h2 class="hero-title" id="hero-title">
+                <div class="word">
+                    <span class="char">D</span><span class="char">e</span><span class="char">s</span><span class="char">a</span><span class="char">r</span><span class="char">r</span><span class="char">o</span><span class="char">l</span><span class="char">l</span><span class="char">a</span><span class="char">d</span><span class="char">o</span><span class="char">r</span>
+                </div>
+                <br />
+                <div class="word highlight-text">
+                    <span class="char">F</span><span class="char">U</span><span class="char">L</span><span class="char">L</span><span class="char">S</span><span class="char">T</span><span class="char">A</span><span class="char">C</span><span class="char">K</span>
+                </div>
+            </h2>
+
+            <p class="hero-description" id="hero-desc">
+                Desarrollador FULLSTACK más enfocado en el BACKEND. Haciendo soluciones robustas
+                y escalables con el tiempo con la arquitectura pertinente. Transformo tu idea en una
+                app ya sea web, escritorio o móvil en algo elegante y robusto frente a ataques.
+            </p>
+
+            <div class="hero-actions" id="hero-actions">
+                <a href="#projects" class="btn-primary btn-hero-left">
+                    <span>View Projects</span>
+                    <span class="arrow">→</span>
+                </a>
+                <a href="#contact" class="btn-secondary">
+                    Get In Touch
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-image-wrapper" id="hero-img">
+            <div class="tech-frame" id="tech-frame">
+                <div class="image-container">
+                    <img src={imagenEntorno} alt="Entorno de desarrollo Backend multiscreen" />
+                    <div class="glitch-line" id="glitch1"></div>
+                    <div class="glitch-line" id="glitch2"></div>
+                </div>
+                <span class="version-tag text-code-md">v2.4.0_STABLE</span>
+            </div>
+        </div>
+
+    </section>
+
+    <section id="tech-stack" class="stack-container">
+
+        <div class="stack-header">
+            <div class="stack-title-group">
+                <span class="subtitle-tech text-code-md" id="sl1">Tecnologias</span>
+                <h3 class="stack-main-title" id="st1">Stack Tecnologico</h3>
+            </div>
+        </div>
+
+        <div class="stack-grid">
+
+            <div class="tech-card" id="card1">
+                <div class="card-header">
+                    <svg class="icon-green" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                    <span class="card-number text-code-md">01</span>
+                </div>
+                <h4>Frontend</h4>
+                <p>React, Next.js, Tailwind CSS, TypeScript, Astro</p>
+                <div class="stat-bar"><div class="stat-fill" id="bar1" data-width="80"></div></div>
+            </div>
+
+            <div class="tech-card" id="card2">
+                <div class="card-header">
+                    <svg class="icon-green" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg>
+                    <span class="card-number text-code-md">02</span>
+                </div>
+                <h4>Backend</h4>
+                <p>Node.js, Python, C#, Java, Spring Boot, MySQL, PostgreSQL</p>
+                <div class="stat-bar"><div class="stat-fill" id="bar2" data-width="95"></div></div>
+            </div>
+
+            <div class="tech-card" id="card3">
+                <div class="card-header">
+                    <svg class="icon-green" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m11 2 3 4-3 4-3-4z"></path><path d="m14 6 7 16"></path><path d="M3 22 10 6"></path><path d="M7 14h10"></path></svg>
+                    <span class="card-number text-code-md">04</span>
+                </div>
+                <h4>Arquitectura</h4>
+                <p>Microservices, REST API, MVC</p>
+                <div class="stat-bar"><div class="stat-fill" id="bar3" data-width="88"></div></div>
+            </div>
+
+        </div>
+    </section>
+
+    <Proyectos />
+
+</Layout>
+
+<!-- anime.js desde CDN -->
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+<script is:inline>
+document.addEventListener('DOMContentLoaded', () => {
+
+    /* =============================================
+       CURSOR PERSONALIZADO
+    ============================================= */
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursor-ring');
+
+    if (cursor && ring) {
+        let mx = 0, my = 0, rx = 0, ry = 0;
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX;
+            my = e.clientY;
+            cursor.style.left = mx + 'px';
+            cursor.style.top  = my + 'px';
+        });
+
+        function lerp(a, b, n) { return (1 - n) * a + n * b; }
+        function tickCursor() {
+            rx = lerp(rx, mx, 0.12);
+            ry = lerp(ry, my, 0.12);
+            ring.style.left = rx + 'px';
+            ring.style.top  = ry + 'px';
+            requestAnimationFrame(tickCursor);
+        }
+        tickCursor();
+
+        document.querySelectorAll('a, button, .tech-card').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.width   = '20px';
+                cursor.style.height  = '20px';
+                cursor.style.opacity = '0.6';
+                ring.style.width     = '56px';
+                ring.style.height    = '56px';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.width   = '10px';
+                cursor.style.height  = '10px';
+                cursor.style.opacity = '1';
+                ring.style.width     = '36px';
+                ring.style.height    = '36px';
+            });
+        });
+    }
+
+    /* =============================================
+       SCANLINE DE ENTRADA
+    ============================================= */
+    anime({
+        targets: '#scanline',
+        top: ['0%', '100%'],
+        opacity: [0, 0.9, 0],
+        duration: 1800,
+        easing: 'linear',
+        delay: 100,
+        complete: () => {
+            const s = document.getElementById('scanline');
+            if (s) s.style.display = 'none';
+        }
+    });
+
+    /* =============================================
+       STATUS DOT — PULSE INFINITO
+    ============================================= */
+    anime({
+        targets: '#status-dot',
+        boxShadow: [
+            '0 0 0 0 rgba(0,255,156,0.7)',
+            '0 0 0 10px rgba(0,255,156,0)',
+        ],
+        duration: 1400,
+        easing: 'easeOutSine',
+        loop: true,
+        delay: 1000
+    });
+
+    /* =============================================
+       HERO — ANIMACIONES DE ENTRADA (SECUENCIADAS)
+    ============================================= */
+
+    // 1. Status bar
+    setTimeout(() => {
+        anime({
+            targets: '#sys-status',
+            opacity: [0, 1],
+            translateX: [-24, 0],
+            duration: 700,
+            easing: 'easeOutExpo'
+        });
+    }, 500);
+
+    // 2. Título letra a letra
+    setTimeout(() => {
+        const title = document.getElementById('hero-title');
+        if (title) title.style.opacity = '1';
+
+        anime({
+            targets: '#hero-title .char',
+            translateY: ['110%', '0%'],
+            opacity: [0, 1],
+            duration: 650,
+            delay: anime.stagger(38, { start: 0 }),
+            easing: 'easeOutExpo'
+        });
+    }, 800);
+
+    // 3. Descripción
+    setTimeout(() => {
+        anime({
+            targets: '#hero-desc',
+            opacity: [0, 1],
+            translateY: [18, 0],
+            duration: 700,
+            easing: 'easeOutExpo'
+        });
+    }, 1350);
+
+    // 4. Botones
+    setTimeout(() => {
+        anime({
+            targets: '#hero-actions',
+            opacity: [0, 1],
+            translateY: [18, 0],
+            duration: 600,
+            easing: 'easeOutExpo'
+        });
+    }, 1650);
+
+    // 5. Imagen / frame
+    setTimeout(() => {
+        anime({
+            targets: '#hero-img',
+            opacity: [0, 1],
+            translateX: [44, 0],
+            duration: 900,
+            easing: 'easeOutExpo'
+        });
+
+        // Efecto glitch recurrente
+        function glitch() {
+            anime({
+                targets: '#glitch1',
+                width: [0, Math.random() * 50 + 20 + '%'],
+                left: Math.random() * 40 + '%',
+                top: Math.random() * 80 + 10 + '%',
+                opacity: [0.7, 0],
+                duration: 280,
+                easing: 'easeOutExpo'
+            });
+            anime({
+                targets: '#glitch2',
+                width: [0, Math.random() * 35 + 10 + '%'],
+                left: Math.random() * 55 + '%',
+                top: Math.random() * 80 + 10 + '%',
+                opacity: [0.4, 0],
+                duration: 180,
+                easing: 'easeOutExpo'
+            });
+            setTimeout(glitch, 3000 + Math.random() * 5000);
+        }
+        setTimeout(glitch, 2200);
+    }, 700);
+
+    /* =============================================
+       MICRO-INTERACCIONES EN HOVER
+    ============================================= */
+    document.querySelectorAll('.tech-card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            anime({ targets: card, scale: [1, 1.025], duration: 280, easing: 'easeOutQuad' });
+        });
+        card.addEventListener('mouseleave', () => {
+            anime({ targets: card, scale: [1.025, 1], duration: 280, easing: 'easeOutQuad' });
+        });
+    });
+
+    document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+            anime({ targets: btn, scale: [1, 1.04], duration: 200, easing: 'easeOutQuad' });
+        });
+        btn.addEventListener('mouseleave', () => {
+            anime({ targets: btn, scale: [1.04, 1], duration: 200, easing: 'easeOutQuad' });
+        });
+    });
+
+    /* =============================================
+       INTERSECTION OBSERVER — ANIMACIONES AL HACER SCROLL
+    ============================================= */
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+
+            /* --- TECH STACK --- */
+            if (el.id === 'tech-stack') {
+                anime({ targets: '#sl1', opacity: [0, 1], translateX: [-12, 0], duration: 500, easing: 'easeOutExpo' });
+                anime({ targets: '#st1', opacity: [0, 1], translateY: [14, 0], duration: 600, delay: 150, easing: 'easeOutExpo' });
+
+                anime({
+                    targets: ['#card1', '#card2', '#card3'],
+                    opacity: [0, 1],
+                    translateY: [28, 0],
+                    duration: 700,
+                    delay: anime.stagger(130, { start: 250 }),
+                    easing: 'easeOutExpo',
+                    complete: () => {
+                        ['bar1', 'bar2', 'bar3'].forEach(id => {
+                            const bar = document.getElementById(id);
+                            if (bar) {
+                                anime({
+                                    targets: bar,
+                                    width: ['0%', bar.dataset.width + '%'],
+                                    duration: 1100,
+                                    easing: 'easeOutExpo',
+                                    delay: 80
+                                });
+                            }
+                        });
+                    }
+                });
+                io.unobserve(el);
+            }
+
+            /* --- CONTADORES --- */
+            if (el.id === 'counter-row') {
+                anime({
+                    targets: '#counter-row',
+                    opacity: [0, 1],
+                    translateY: [20, 0],
+                    duration: 600,
+                    easing: 'easeOutExpo'
+                });
+
+                const counters = [
+                    { id: 'cnt1', end: 24 },
+                    { id: 'cnt2', end: 12 },
+                    { id: 'cnt3', end: 18 },
+                ];
+
+                counters.forEach((c, i) => {
+                    const node = document.getElementById(c.id);
+                    if (!node) return;
+                    anime({
+                        targets: { val: 0 },
+                        val: c.end,
+                        duration: 1800,
+                        delay: i * 200,
+                        easing: 'easeOutExpo',
+                        update: function (anim) {
+                            node.textContent = Math.round(anim.animations[0].currentValue);
+                        }
+                    });
+                });
+                io.unobserve(el);
+            }
+        });
+    }, { threshold: 0.2 });
+
+    const techStack   = document.getElementById('tech-stack');
+    const counterRow  = document.getElementById('counter-row');
+    if (techStack)  io.observe(techStack);
+    if (counterRow) io.observe(counterRow);
+
+}); // END DOMContentLoaded
+</script>
+
+<style>
+    /* =============================================
+       CURSOR PERSONALIZADO
+    ============================================= */
+    .cursor {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background-color: var(--primary);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        mix-blend-mode: screen;
+        transform: translate(-50%, -50%);
+        transition: width 0.15s ease, height 0.15s ease, opacity 0.15s ease;
+    }
+
+    .cursor-ring {
+        position: fixed;
+        width: 36px;
+        height: 36px;
+        border: 1px solid rgba(0, 255, 156, 0.35);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+        transition: width 0.3s ease, height 0.3s ease;
+    }
+
+    /* =============================================
+       SCANLINE
+    ============================================= */
+    .scanline {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 200;
+    }
+
+    /* =============================================
+       NOISE OVERLAY
+    ============================================= */
+    .noise {
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 50;
+        opacity: 0.35;
+    }
+
+    /* =============================================
+       HERO
+    ============================================= */
+    .hero-container {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: var(--gap-xl);
+        align-items: center;
+        min-height: 70vh;
+    }
+
+    .hero-text-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--gap-md);
+    }
+
+    .system-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--primary);
+        opacity: 0;
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        background-color: var(--primary);
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    /* Título: cada char vive en un wrapper con overflow:hidden para el slide-up */
+    .hero-title {
+        font-size: 54px;
+        font-weight: 800;
+        line-height: 1.1;
+        margin: 0;
+        color: #ffffff;
+        letter-spacing: -0.01em;
+        opacity: 0; /* anime lo muestra */
+    }
+
+    .hero-title .word {
+        display: inline-block;
+        overflow: hidden;
+    }
+
+    .hero-title .char {
+        display: inline-block;
+        transform: translateY(110%);
+        opacity: 0;
+    }
+
+    .highlight-text {
+        color: var(--on-surface);
+    }
+
+    .hero-description {
+        color: var(--on-surface-variant);
+        font-size: 16px;
+        line-height: 1.6;
+        max-width: 540px;
+        margin: 0;
+        opacity: 0;
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 16px;
+        margin-top: 8px;
+        opacity: 0;
+    }
+
+    .btn-hero-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-transform: none;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 14px;
+        padding: 14px 28px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Efecto fill blanco al hover */
+    .btn-hero-left::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: #fff;
+        transform: translateX(-101%);
+        transition: transform 0.32s cubic-bezier(0.65, 0, 0.35, 1);
+        z-index: 0;
+    }
+
+    .btn-hero-left:hover::before {
+        transform: translateX(0);
+    }
+
+    .btn-hero-left span,
+    .btn-hero-left .arrow {
+        position: relative;
+        z-index: 1;
+    }
+
+    .arrow {
+        font-size: 16px;
+        transition: transform 0.2s ease;
+    }
+
+    .btn-hero-left:hover .arrow {
+        transform: translateX(4px);
+    }
+
+    .btn-secondary {
+        display: inline-block;
+        background-color: transparent;
+        color: var(--on-surface);
+        border: 1px solid var(--outline-variant);
+        padding: 14px 28px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: none;
+        transition: border-color 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--primary);
+        background-color: rgba(0, 255, 156, 0.04);
+        color: var(--primary);
+    }
+
+    .hero-image-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+    }
+
+    .tech-frame {
+        position: relative;
+        border: 1px solid var(--outline-variant);
+        padding: 24px;
+        background-color: rgba(18, 20, 20, 0.5);
+        width: 100%;
+        max-width: 440px;
+    }
+
+    .tech-frame::before {
+        content: '';
+        position: absolute;
+        top: -1px; left: -1px;
+        width: 20px; height: 20px;
+        border-top: 2px solid var(--primary);
+        border-left: 2px solid var(--primary);
+    }
+
+    .tech-frame::after {
+        content: '';
+        position: absolute;
+        bottom: -1px; right: -1px;
+        width: 20px; height: 20px;
+        border-bottom: 2px solid var(--primary);
+        border-right: 2px solid var(--primary);
+    }
+
+    .image-container {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        border: 1px solid rgba(64, 73, 69, 0.3);
+        position: relative;
+    }
+
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(30%) brightness(0.8);
+    }
+
+    /* Líneas de glitch sobre la imagen */
+    .glitch-line {
+        position: absolute;
+        height: 1px;
+        background: var(--primary);
+        left: 0;
+        width: 0;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 10;
+    }
+
+    .version-tag {
+        position: absolute;
+        bottom: -12px;
+        right: 16px;
+        background-color: var(--surface);
+        border: 1px solid var(--outline-variant);
+        color: var(--primary);
+        padding: 4px 12px;
+        font-size: 11px;
+        letter-spacing: 0.05em;
+    }
+
+    /* =============================================
+       TECH STACK
+    ============================================= */
+    .stack-container {
+        display: flex;
+        flex-direction: column;
+        gap: var(--gap-xl);
+        margin-top: var(--gap-xl);
+    }
+
+    .stack-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .stack-title-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .subtitle-tech {
+        color: var(--primary);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        opacity: 0;
+    }
+
+    .stack-main-title {
+        font-size: 38px;
+        font-weight: 800;
+        color: #ffffff;
+        margin: 0;
+        letter-spacing: -0.01em;
+        opacity: 0;
+    }
+
+    .stack-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--gap-md);
+    }
+
+    .tech-card {
+        border: 1px solid var(--outline-variant);
+        background-color: rgba(26, 28, 28, 0.2);
+        padding: var(--gap-md);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        opacity: 0;
+        position: relative;
+        overflow: hidden;
+        cursor: none;
+        transition: border-color 0.25s ease, background-color 0.25s ease;
+    }
+
+    /* Línea inferior animada en hover */
+    .tech-card::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--primary);
+        transition: width 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .tech-card:hover::before {
+        width: 100%;
+    }
+
+    .tech-card:hover {
+        border-color: rgba(0, 255, 156, 0.3);
+        background-color: rgba(26, 28, 28, 0.5);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .icon-green {
+        color: var(--primary);
+    }
+
+    .card-number {
+        color: var(--outline-variant);
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .tech-card h4 {
+        font-size: 22px;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0;
+    }
+
+    .tech-card p {
+        color: var(--on-surface-variant);
+        font-size: 14px;
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    /* Barra de habilidad */
+    .stat-bar {
+        height: 2px;
+        background: var(--outline-variant);
+        border-radius: 1px;
+        overflow: hidden;
+    }
+
+    .stat-fill {
+        height: 100%;
+        background: var(--primary);
+        width: 0%;
+        border-radius: 1px;
+    }
+
+    /* =============================================
+       CONTADORES
+    ============================================= */
+    .counter-section {
+        margin-top: var(--gap-xl);
+    }
+
+    .counter-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        opacity: 0;
+    }
+
+    .counter-box {
+        text-align: center;
+        padding: 28px;
+        border: 1px solid var(--outline-variant);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .counter-num {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 52px;
+        font-weight: 800;
+        color: var(--primary);
+        line-height: 1;
+    }
+
+    .counter-label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        color: var(--on-surface-variant);
+        letter-spacing: 0.1em;
+    }
+
+    /* =============================================
+       RESPONSIVE
+    ============================================= */
+    @media (max-width: 1024px) {
+        .stack-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 900px) {
+        .hero-container {
+            grid-template-columns: 1fr;
+            gap: var(--gap-xl);
+        }
+        .hero-title { font-size: 38px; }
+        .hero-actions { flex-direction: column; }
+        .stack-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-image-wrapper { display: none; }
+        .counter-row { grid-template-columns: 1fr; }
+        .cursor, .cursor-ring { display: none; }
+    }
+
+    @media (max-width: 600px) {
+        .stack-grid { grid-template-columns: 1fr; }
+    }
+</style>

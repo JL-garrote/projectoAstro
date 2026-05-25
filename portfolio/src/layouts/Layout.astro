@@ -1,0 +1,145 @@
+---
+import Welcome from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+	title?: string;
+}
+
+const { title = "Juan Luis Gil Garrote" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body class="grid-overlay">
+		<Welcome />
+
+		<main class="site-main">
+			<slot />
+		</main>
+
+		<Footer />
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		/* Color Palette - Core */
+		--surface: #121414;
+		--surface-bright: #383939;
+		--surface-container-low: #1a1c1c;
+		--surface-container-lowest: #0d0e0f;
+
+		/* Brand & Accents */
+		--primary: #00ff9c;
+		--primary-fixed-dim: #00e089;
+		--on-primary: #003820;
+
+		/* Typography Colors */
+		--on-surface: #e1e3e2;
+		--on-surface-variant: #c0c9c4;
+		--outline-variant: #404945;
+
+		/* Spacing System */
+		--margin-desktop: 80px;
+		--gap-md: 24px;
+		--gap-xl: 48px;
+
+		/* Typography */
+		--font-family: "Hanken Grotesk", sans-serif;
+	}
+
+	/* Global Styles */
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	body {
+		background-color: var(--surface);
+		color: var(--on-surface);
+		font-family: var(--font-family);
+		margin: 0;
+		-webkit-font-smoothing: antialiased;
+
+		/* CAMBIO ESENCIAL: Forzamos al body a medir toda la pantalla 
+       y a comportarse como una columna flexible */
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+	}
+
+	/* CAMBIO ESENCIAL: Añadimos la etiqueta main para que actúe 
+     como un resorte estirable que empuja al footer al fondo */
+	main,
+	.site-main {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+	}
+
+	/* Grid & Layout Utilities - Aplicado como fondo sutil al body */
+	.grid-overlay {
+		background-image: radial-gradient(
+			var(--surface-bright) 1px,
+			transparent 1px
+		);
+		background-size: 40px 40px;
+		background-color: var(--surface);
+	}
+
+	/* Code-style Text Elements */
+	.text-code-md {
+		font-family: "JetBrains Mono", "Fira Code", monospace;
+		font-size: 14px;
+		letter-spacing: -0.02em;
+	}
+
+	/* Interactive Components (Botones globales) */
+	.btn-primary {
+		display: inline-block;
+		background-color: var(--primary);
+		color: var(--on-primary);
+		padding: 12px 24px;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		text-decoration: none;
+		border: none;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.btn-primary:hover {
+		filter: brightness(1.1);
+		box-shadow: 0 0 20px rgba(0, 255, 156, 0.3);
+	}
+
+	/* Section Transitions */
+	section {
+		padding: var(--gap-xl) var(--margin-desktop);
+		border-bottom: 1px solid var(--outline-variant);
+	}
+
+	/* Responsive básico para pantallas pequeñas */
+	@media (max-width: 768px) {
+		section {
+			padding: var(--gap-md) 20px;
+		}
+	}
+</style>
