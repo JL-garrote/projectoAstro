@@ -1,0 +1,359 @@
+---
+---
+
+<section id="tech-stack" class="techstack-section">
+
+  <!-- HEADER -->
+  <div class="ts-header">
+    <div class="ts-header-bar"></div>
+    <h2 class="ts-title">Stack tecnologico</h2>
+  </div>
+
+  <!-- GRID DE 4 PANELES -->
+  <div class="ts-grid">
+
+    <!-- PANEL 1: CORE ENGINEERING -->
+    <div class="ts-panel" id="panel-core">
+      <span class="panel-label">Tecnologias</span>
+      <div class="panel-cols">
+
+        <div class="panel-col">
+          <p class="col-heading"><span class="col-num">01.</span> BACKEND</p>
+          <ul class="skill-list">
+            <li><span class="arrow">&gt;</span> Java / Spring Boot</li>
+            <li><span class="arrow">&gt;</span> Node.js</li>
+            <li><span class="arrow">&gt;</span> MySQL</li>
+            <li><span class="arrow">&gt;</span> Python</li>
+          </ul>
+        </div>
+
+        <div class="panel-col">
+          <p class="col-heading"><span class="col-num">02.</span> FRONTEND</p>
+          <ul class="skill-list">
+            <li><span class="arrow">&gt;</span> React / Next.js</li>
+            <li><span class="arrow">&gt;</span> Tailwind CSS</li>
+            <li><span class="arrow">&gt;</span> Astro</li>
+            <li><span class="arrow">&gt;</span> AnimeJS</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+<script is:inline>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+
+      // Header
+      anime({
+        targets: '.ts-header-bar',
+        scaleX: [0, 1],
+        duration: 600,
+        easing: 'easeOutExpo',
+        transformOrigin: 'left center'
+      });
+      anime({
+        targets: '.ts-title',
+        opacity: [0, 1],
+        translateX: [-20, 0],
+        duration: 700,
+        delay: 200,
+        easing: 'easeOutExpo'
+      });
+
+      // Paneles escalonados
+      anime({
+        targets: '.ts-panel',
+        opacity: [0, 1],
+        translateY: [32, 0],
+        duration: 700,
+        delay: anime.stagger(130, { start: 350 }),
+        easing: 'easeOutExpo'
+      });
+
+      // Skills con stagger
+      anime({
+        targets: '.skill-list li, .strategy-list li',
+        opacity: [0, 1],
+        translateX: [-10, 0],
+        duration: 500,
+        delay: anime.stagger(60, { start: 700 }),
+        easing: 'easeOutExpo'
+      });
+
+      // Quote
+      anime({
+        targets: '.phil-quote',
+        opacity: [0, 1],
+        translateY: [12, 0],
+        duration: 700,
+        delay: 900,
+        easing: 'easeOutExpo'
+      });
+
+      io.disconnect();
+    });
+  }, { threshold: 0.15 });
+
+  const section = document.getElementById('tech-stack');
+  if (section) io.observe(section);
+
+  // Hover en paneles
+  document.querySelectorAll('.ts-panel').forEach(panel => {
+    panel.addEventListener('mouseenter', () => {
+      anime({ targets: panel, borderColor: 'rgba(0,255,156,0.4)', duration: 250, easing: 'easeOutQuad' });
+    });
+    panel.addEventListener('mouseleave', () => {
+      anime({ targets: panel, borderColor: 'rgba(64,73,69,0.35)', duration: 350, easing: 'easeOutQuad' });
+    });
+  });
+});
+</script>
+
+<style>
+  /* =============================================
+     SECCIÓN WRAPPER
+  ============================================= */
+  .techstack-section {
+    padding: var(--gap-xl, 48px) 64px;
+  }
+
+  /* =============================================
+     HEADER
+  ============================================= */
+  .ts-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .ts-header-bar {
+    width: 4px;
+    height: 42px;
+    background: var(--primary, #00ff9c);
+    flex-shrink: 0;
+    transform-origin: left center;
+    transform: scaleX(0);
+  }
+
+  .ts-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+    letter-spacing: -0.01em;
+    opacity: 0;
+  }
+
+  /* =============================================
+     GRID: 3 PANELES (2fr 1fr 1fr)
+  ============================================= */
+  .ts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1.1fr 1.1fr;
+    gap: 0; /* bordes compartidos */
+  }
+
+  /* =============================================
+     PANEL BASE
+  ============================================= */
+  .ts-panel {
+    border: 1px solid rgba(64, 73, 69, 0.35);
+    padding: 28px;
+    background-color: rgba(18, 20, 20, 0.4);
+    opacity: 0;
+    position: relative;
+    overflow: hidden;
+    /* Bordes adyacentes se solapan 1px */
+    margin-right: -1px;
+  }
+
+  .ts-panel:last-child {
+    margin-right: 0;
+  }
+
+  /* =============================================
+     LABEL (etiqueta superior tipo código)
+  ============================================= */
+  .panel-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--primary, #00ff9c);
+    display: block;
+    margin-bottom: 24px;
+  }
+
+  /* =============================================
+     PANEL 1 — CORE ENGINEERING
+  ============================================= */
+  .panel-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .col-heading {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #ffffff;
+    margin: 0 0 14px 0;
+    text-transform: uppercase;
+  }
+
+  .col-num {
+    color: var(--primary, #00ff9c);
+    margin-right: 4px;
+  }
+
+  .skill-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .skill-list li {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--on-surface-variant, #8a9994);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arrow {
+    color: var(--primary, #00ff9c);
+    font-size: 11px;
+  }
+
+  /* =============================================
+     PANEL 2 — STRATEGIC MINDSET
+  ============================================= */
+  .ts-panel--mid {
+    border-left-color: rgba(64, 73, 69, 0.35);
+  }
+
+  .strategy-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .strategy-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--on-surface-variant, #8a9994);
+    line-height: 1.5;
+  }
+
+  .strategy-icon {
+    color: var(--primary, #00ff9c);
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* =============================================
+     PANEL 3 — PHILOSOPHY
+  ============================================= */
+  .ts-panel--philosophy {
+    background-color: rgba(14, 16, 16, 0.6);
+  }
+
+  /* Watermark CODE en el fondo */
+  .phil-watermark {
+    position: absolute;
+    top: 12px;
+    right: -8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 72px;
+    font-weight: 900;
+    color: rgba(0, 255, 156, 0.06);
+    letter-spacing: -0.04em;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+  }
+
+  .phil-quote {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--on-surface-variant, #8a9994);
+    margin: 0 0 auto 0;
+    font-style: italic;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+  }
+
+  .phil-quote::before {
+    content: '"';
+    color: var(--primary, #00ff9c);
+    font-size: 28px;
+    line-height: 0;
+    vertical-align: -10px;
+    margin-right: 4px;
+    font-style: normal;
+  }
+
+  .phil-footer {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--on-surface-variant, #8a9994);
+    margin: 24px 0 0 0;
+    letter-spacing: 0.08em;
+    position: relative;
+    z-index: 1;
+  }
+
+  .phil-footer .accent {
+    color: var(--primary, #00ff9c);
+  }
+
+  /* =============================================
+     RESPONSIVE
+  ============================================= */
+  @media (max-width: 1024px) {
+    .ts-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .ts-panel--philosophy {
+      grid-column: span 2;
+      margin-right: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .ts-grid {
+      grid-template-columns: 1fr;
+    }
+    .ts-panel {
+      margin-right: 0;
+    }
+    .ts-panel--philosophy {
+      grid-column: span 1;
+    }
+    .techstack-section {
+      padding: 32px 20px;
+    }
+  }
+</style>

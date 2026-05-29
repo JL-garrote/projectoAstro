@@ -26,6 +26,14 @@ const { title = "Juan Luis Gil Garrote" } = Astro.props;
 		/>
 	</head>
 	<body class="grid-overlay">
+		<div class="cursor" id="cursor"></div>
+		<div class="cursor-ring" id="cursor-ring"></div>
+
+		<canvas
+			id="dot-canvas"
+			style="position:fixed;inset:0;pointer-events:none;z-index:1;"
+		></canvas>
+
 		<Welcome />
 
 		<main class="site-main">
@@ -38,36 +46,27 @@ const { title = "Juan Luis Gil Garrote" } = Astro.props;
 
 <style is:global>
 	:root {
-		/* Color Palette - Core */
 		--surface: #121414;
 		--surface-bright: #383939;
 		--surface-container-low: #1a1c1c;
 		--surface-container-lowest: #0d0e0f;
-
-		/* Brand & Accents */
 		--primary: #00ff9c;
 		--primary-fixed-dim: #00e089;
 		--on-primary: #003820;
-
-		/* Typography Colors */
 		--on-surface: #e1e3e2;
 		--on-surface-variant: #c0c9c4;
 		--outline-variant: #404945;
-
-		/* Spacing System */
 		--margin-desktop: 80px;
 		--gap-md: 24px;
 		--gap-xl: 48px;
-
-		/* Typography */
 		--font-family: "Hanken Grotesk", sans-serif;
 	}
 
-	/* Global Styles */
 	*,
 	*::before,
 	*::after {
 		box-sizing: border-box;
+		cursor: none !important;
 	}
 
 	body {
@@ -76,16 +75,11 @@ const { title = "Juan Luis Gil Garrote" } = Astro.props;
 		font-family: var(--font-family);
 		margin: 0;
 		-webkit-font-smoothing: antialiased;
-
-		/* CAMBIO ESENCIAL: Forzamos al body a medir toda la pantalla 
-       y a comportarse como una columna flexible */
 		min-height: 100vh;
 		display: flex;
 		flex-direction: column;
 	}
 
-	/* CAMBIO ESENCIAL: Añadimos la etiqueta main para que actúe 
-     como un resorte estirable que empuja al footer al fondo */
 	main,
 	.site-main {
 		flex: 1;
@@ -93,24 +87,50 @@ const { title = "Juan Luis Gil Garrote" } = Astro.props;
 		flex-direction: column;
 	}
 
-	/* Grid & Layout Utilities - Aplicado como fondo sutil al body */
 	.grid-overlay {
-		background-image: radial-gradient(
-			var(--surface-bright) 1px,
-			transparent 1px
-		);
-		background-size: 40px 40px;
+		background-image: radial-gradient(var(--surface-bright) 1px, transparent 1px);
 		background-color: var(--surface);
+		animation: zoomDots 6s ease-in-out infinite;
 	}
 
-	/* Code-style Text Elements */
+	@keyframes zoomDots {
+		0%, 100% { background-size: 40px 40px; }
+		50%       { background-size: 55px 55px; }
+	}
+
+	.cursor {
+		position: fixed;
+		width: 10px;
+		height: 10px;
+		background-color: var(--primary);
+		border-radius: 50%;
+		pointer-events: none;
+		z-index: 9999;
+		mix-blend-mode: screen;
+		transform: translate(-50%, -50%);
+		opacity: 0;
+		transition: width 0.15s ease, height 0.15s ease, opacity 0.15s ease;
+	}
+
+	.cursor-ring {
+		position: fixed;
+		width: 36px;
+		height: 36px;
+		border: 1px solid rgba(0, 255, 156, 0.35);
+		border-radius: 50%;
+		pointer-events: none;
+		z-index: 9998;
+		transform: translate(-50%, -50%);
+		opacity: 0;
+		transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+	}
+
 	.text-code-md {
 		font-family: "JetBrains Mono", "Fira Code", monospace;
 		font-size: 14px;
 		letter-spacing: -0.02em;
 	}
 
-	/* Interactive Components (Botones globales) */
 	.btn-primary {
 		display: inline-block;
 		background-color: var(--primary);
@@ -121,7 +141,6 @@ const { title = "Juan Luis Gil Garrote" } = Astro.props;
 		letter-spacing: 0.05em;
 		text-decoration: none;
 		border: none;
-		cursor: pointer;
 		transition: all 0.2s ease;
 	}
 
@@ -130,16 +149,125 @@ const { title = "Juan Luis Gil Garrote" } = Astro.props;
 		box-shadow: 0 0 20px rgba(0, 255, 156, 0.3);
 	}
 
-	/* Section Transitions */
 	section {
 		padding: var(--gap-xl) var(--margin-desktop);
 		border-bottom: 1px solid var(--outline-variant);
 	}
 
-	/* Responsive básico para pantallas pequeñas */
 	@media (max-width: 768px) {
+		.cursor,
+		.cursor-ring {
+			display: none;
+		}
+		*,
+		*::before,
+		*::after {
+			cursor: auto !important;
+		}
 		section {
 			padding: var(--gap-md) 20px;
 		}
 	}
 </style>
+
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+<script is:inline>
+	(function () {
+		const cursor = document.getElementById("cursor");
+		const ring   = document.getElementById("cursor-ring");
+		if (!cursor || !ring) return;
+
+		let mx = 0, my = 0, rx = 0, ry = 0;
+
+		document.addEventListener("mousemove", (e) => {
+			mx = e.clientX;
+			my = e.clientY;
+			cursor.style.left    = mx + "px";
+			cursor.style.top     = my + "px";
+			cursor.style.opacity = "1";
+			ring.style.opacity   = "1";
+		});
+
+		function lerp(a, b, n) { return (1 - n) * a + n * b; }
+
+		function tickCursor() {
+			rx = lerp(rx, mx, 0.12);
+			ry = lerp(ry, my, 0.12);
+			ring.style.left = rx + "px";
+			ring.style.top  = ry + "px";
+			requestAnimationFrame(tickCursor);
+		}
+		tickCursor();
+
+		function bindHover() {
+			document.querySelectorAll("a, button, input, textarea, .tech-card").forEach((el) => {
+				el.addEventListener("mouseenter", () => {
+					cursor.style.width   = "20px";
+					cursor.style.height  = "20px";
+					cursor.style.opacity = "0.6";
+					ring.style.width     = "56px";
+					ring.style.height    = "56px";
+					ring.style.opacity   = "1";
+				});
+				el.addEventListener("mouseleave", () => {
+					cursor.style.width   = "10px";
+					cursor.style.height  = "10px";
+					cursor.style.opacity = "1";
+					ring.style.width     = "36px";
+					ring.style.height    = "36px";
+					ring.style.opacity   = "1";
+				});
+			});
+		}
+
+		bindHover();
+		document.addEventListener("astro:page-load", bindHover);
+
+	})();
+
+	/* ── CANVAS PUNTOS ANIMADOS ── */
+	(function () {
+		const canvas = document.getElementById("dot-canvas");
+		if (!canvas) return;
+		const ctx  = canvas.getContext("2d");
+		const SIZE = 40;
+		let cols, rows, dots;
+
+		function resize() {
+			canvas.width  = window.innerWidth;
+			canvas.height = window.innerHeight;
+			cols = Math.ceil(canvas.width  / SIZE) + 1;
+			rows = Math.ceil(canvas.height / SIZE) + 1;
+			dots = Array.from({ length: cols * rows }, () => ({
+				alpha: 0, target: 0, timer: 0,
+			}));
+		}
+		resize();
+		window.addEventListener("resize", resize);
+
+		setInterval(() => {
+			const i = Math.floor(Math.random() * dots.length);
+			dots[i].target = Math.random() > 0.5 ? 1 : 0.4;
+			dots[i].timer  = 60 + Math.random() * 200;
+		}, 80);
+
+		function draw() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			dots.forEach((d, i) => {
+				d.alpha += (d.target - d.alpha) * 0.05;
+				if (d.timer-- <= 0) d.target = 0;
+				const x = (i % cols) * SIZE;
+				const y = Math.floor(i / cols) * SIZE;
+				ctx.beginPath();
+				ctx.arc(x, y, 1, 0, Math.PI * 2);
+				ctx.fillStyle = d.alpha > 0.15
+					? `rgba(0,255,156,${d.alpha})`
+					: `rgba(56,61,57,${0.4 + d.alpha})`;
+				ctx.fill();
+			});
+			requestAnimationFrame(draw);
+		}
+		draw();
+	})();
+</script>

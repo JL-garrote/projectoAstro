@@ -1,0 +1,380 @@
+---
+
+---
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+<div class="scanline" id="scanline"></div>
+<div class="noise"></div>
+
+<section id="hero" class="hero-container">
+    <!-- COLUMNA IZQUIERDA: EXPERIENCIA -->
+    <div class="col">
+        <h2 class="section-title">Experiencia</h2>
+
+        <div class="entry">
+            <div class="entry-marker"></div>
+            <div class="entry-body">
+                <div class="entry-top">
+                    <h3 class="entry-role">Desarrollador Full Stack</h3>
+                    <span class="entry-date">3 meses — PRESENCIAL.</span>
+                </div>
+                <p class="entry-company">Elenco Ahorro - Mairena del Aljarafe</p>
+                <p class="entry-desc">
+                    Desarrollo de aplicaciones web. Mas especifico un CRM completo para una consultoría energética.
+                    Implementación de APIs REST y gestión de bases de
+                    datos relacionales.
+                </p>
+            </div>
+        </div>
+
+        <div class="entry">
+            <div class="entry-marker"></div>
+            <div class="entry-body">
+                <div class="entry-top">
+                    <h3 class="entry-role">Técnico de Sistemas</h3>
+                    <span class="entry-date">3 meses — PRESENCIAL.</span>
+                </div>
+                <p class="entry-company">Axona.SLR - Pavia (Italia)</p>
+                <p class="entry-desc">
+                    Mantenimiento y administración de infraestructura de red.
+                    Soporte técnico a usuarios y gestión de incidencias.
+                    Mantenimiento de sistemas informáticos y servidores locales.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: EDUCACIÓN -->
+    <div class="col">
+        <h2 class="section-title">Educación</h2>
+
+        <div class="entry">
+            <div class="entry-marker"></div>
+            <div class="entry-body">
+                <div class="entry-top">
+                    <h3 class="entry-role">
+                        Desarrollo de Aplicaciones Multiplataforma
+                    </h3>
+                    <span class="entry-date">2024 — 2026</span>
+                </div>
+                <p class="entry-company">
+                    CFGS — FORMACIÓN PROFESIONAL DE GRADO SUPERIOR
+                </p>
+                <p class="entry-desc">
+                    Formación en desarrollo de aplicaciones multiplataforma.
+                    Especialización en tecnologías Java, Kotlin y desarrollo
+                    móvil.
+                </p>
+            </div>
+        </div>
+
+        <div class="entry">
+            <div class="entry-marker"></div>
+            <div class="entry-body">
+                <div class="entry-top">
+                    <h3 class="entry-role">
+                        Técnico en Sistemas Microinformáticos y Redes
+                    </h3>
+                    <span class="entry-date">2021 — 2023</span>
+                </div>
+                <p class="entry-company">
+                    CFGM — FORMACIÓN PROFESIONAL DE GRADO MEDIO
+                </p>
+                <p class="entry-desc">
+                    Formación en mantenimiento de sistemas informáticos y
+                    administración de redes locales.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script
+    is:inline
+    src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
+></script>
+
+<script is:inline>
+    document.addEventListener("DOMContentLoaded", () => {
+        /* =============================================
+     CURSOR PERSONALIZADO
+  ============================================= */
+        const cursor = document.getElementById("cursor");
+        const ring = document.getElementById("cursor-ring");
+
+        if (cursor && ring) {
+            let mx = 0,
+                my = 0,
+                rx = 0,
+                ry = 0;
+            document.addEventListener("mousemove", (e) => {
+                mx = e.clientX;
+                my = e.clientY;
+                cursor.style.left = mx + "px";
+                cursor.style.top = my + "px";
+            });
+            function lerp(a, b, n) {
+                return (1 - n) * a + n * b;
+            }
+            function tickCursor() {
+                rx = lerp(rx, mx, 0.12);
+                ry = lerp(ry, my, 0.12);
+                ring.style.left = rx + "px";
+                ring.style.top = ry + "px";
+                requestAnimationFrame(tickCursor);
+            }
+            tickCursor();
+        }
+
+        /* =============================================
+     SCANLINE DE ENTRADA
+  ============================================= */
+        anime({
+            targets: "#scanline",
+            top: ["0%", "100%"],
+            opacity: [0, 0.9, 0],
+            duration: 1800,
+            easing: "linear",
+            delay: 100,
+            complete: () => {
+                const s = document.getElementById("scanline");
+                if (s) s.style.display = "none";
+            },
+        });
+
+        /* =============================================
+     ANIMACIÓN DE ENTRADA — TÍTULOS Y ENTRIES
+  ============================================= */
+        anime({
+            targets: ".section-title",
+            opacity: [0, 1],
+            translateY: [20, 0],
+            duration: 700,
+            delay: anime.stagger(200, { start: 300 }),
+            easing: "easeOutExpo",
+        });
+
+        anime({
+            targets: ".entry",
+            opacity: [0, 1],
+            translateY: [24, 0],
+            duration: 700,
+            delay: anime.stagger(120, { start: 550 }),
+            easing: "easeOutExpo",
+        });
+
+        /* =============================================
+     HOVER EN ENTRIES
+  ============================================= */
+        document.querySelectorAll(".entry").forEach((entry) => {
+            entry.addEventListener("mouseenter", () => {
+                anime({
+                    targets: entry,
+                    translateX: [0, 6],
+                    duration: 250,
+                    easing: "easeOutQuad",
+                });
+            });
+            entry.addEventListener("mouseleave", () => {
+                anime({
+                    targets: entry,
+                    translateX: [6, 0],
+                    duration: 250,
+                    easing: "easeOutQuad",
+                });
+            });
+        });
+    });
+</script>
+
+<style>
+    /* =============================================
+     CURSOR
+  ============================================= */
+    .cursor {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background-color: var(--primary);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        mix-blend-mode: screen;
+        transform: translate(-50%, -50%);
+        transition:
+            width 0.15s ease,
+            height 0.15s ease,
+            opacity 0.15s ease;
+    }
+    .cursor-ring {
+        position: fixed;
+        width: 36px;
+        height: 36px;
+        border: 1px solid rgba(0, 255, 156, 0.35);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+        transition:
+            width 0.3s ease,
+            height 0.3s ease;
+    }
+
+    /* =============================================
+     SCANLINE
+  ============================================= */
+    .scanline {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            var(--primary),
+            transparent
+        );
+        opacity: 0;
+        pointer-events: none;
+        z-index: 200;
+    }
+
+    /* =============================================
+     NOISE
+  ============================================= */
+    .noise {
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 50;
+        opacity: 0.35;
+    }
+
+    /* =============================================
+     LAYOUT: DOS COLUMNAS
+  ============================================= */
+    .hero-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--gap-xl, 48px);
+        padding: var(--gap-xl, 48px) 64px; /* ← cambia el 0 por 64px (o más si quieres) */
+    }
+
+    .col {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* =============================================
+     TÍTULO DE SECCIÓN
+  ============================================= */
+    .section-title {
+        font-size: 36px;
+        font-weight: 800;
+        color: #ffffff;
+        margin: 0 0 36px 0;
+        letter-spacing: -0.01em;
+        opacity: 0;
+    }
+
+    /* =============================================
+     ENTRY (ITEM DE EXPERIENCIA / EDUCACIÓN)
+  ============================================= */
+    .entry {
+        display: flex;
+        gap: 16px;
+        padding-bottom: 32px;
+        margin-bottom: 8px;
+        opacity: 0;
+        cursor: default;
+        position: relative;
+    }
+
+    /* Línea vertical conectora */
+    .entry:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        left: 3px;
+        top: 10px;
+        bottom: -8px;
+        width: 1px;
+        background: var(--outline-variant, rgba(64, 73, 69, 0.4));
+    }
+
+    /* Marcador cuadrado verde */
+    .entry-marker {
+        width: 8px;
+        height: 8px;
+        background-color: var(--primary, #00ff9c);
+        flex-shrink: 0;
+        margin-top: 7px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .entry-body {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+    }
+
+    .entry-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .entry-role {
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .entry-date {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--primary, #00ff9c);
+        white-space: nowrap;
+        margin-top: 4px;
+    }
+
+    .entry-company {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        color: var(--on-surface-variant, #8a9994);
+        margin: 0;
+        text-transform: uppercase;
+    }
+
+    .entry-desc {
+        font-size: 14px;
+        line-height: 1.6;
+        color: var(--on-surface-variant, #8a9994);
+        margin: 4px 0 0 0;
+        max-width: 480px;
+    }
+
+    /* =============================================
+     RESPONSIVE
+  ============================================= */
+    @media (max-width: 768px) {
+        .hero-container {
+            grid-template-columns: 1fr;
+        }
+        .cursor,
+        .cursor-ring {
+            display: none;
+        }
+    }
+</style>

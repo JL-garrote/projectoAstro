@@ -2,13 +2,11 @@
 import Layout from '../layouts/Layout.astro';
 import Proyectos from '../components/proyectos.astro';
 
+
 const imagenEntorno = "/assets/entorno.jpg";
 ---
 
 <Layout title="Inicio">
-
-    <div class="cursor" id="cursor"></div>
-    <div class="cursor-ring" id="cursor-ring"></div>
 
     <div class="scanline" id="scanline"></div>
 
@@ -40,11 +38,11 @@ const imagenEntorno = "/assets/entorno.jpg";
 
             <div class="hero-actions" id="hero-actions">
                 <a href="#projects" class="btn-primary btn-hero-left">
-                    <span>View Projects</span>
+                    <span>Mis proyectos</span>
                     <span class="arrow">→</span>
                 </a>
-                <a href="#contact" class="btn-secondary">
-                    Get In Touch
+                <a href="/contact" class="btn-secondary">
+                    Contacto
                 </a>
             </div>
         </div>
@@ -115,50 +113,6 @@ const imagenEntorno = "/assets/entorno.jpg";
 
 <script is:inline>
 document.addEventListener('DOMContentLoaded', () => {
-
-    /* =============================================
-       CURSOR PERSONALIZADO
-    ============================================= */
-    const cursor = document.getElementById('cursor');
-    const ring   = document.getElementById('cursor-ring');
-
-    if (cursor && ring) {
-        let mx = 0, my = 0, rx = 0, ry = 0;
-
-        document.addEventListener('mousemove', e => {
-            mx = e.clientX;
-            my = e.clientY;
-            cursor.style.left = mx + 'px';
-            cursor.style.top  = my + 'px';
-        });
-
-        function lerp(a, b, n) { return (1 - n) * a + n * b; }
-        function tickCursor() {
-            rx = lerp(rx, mx, 0.12);
-            ry = lerp(ry, my, 0.12);
-            ring.style.left = rx + 'px';
-            ring.style.top  = ry + 'px';
-            requestAnimationFrame(tickCursor);
-        }
-        tickCursor();
-
-        document.querySelectorAll('a, button, .tech-card').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursor.style.width   = '20px';
-                cursor.style.height  = '20px';
-                cursor.style.opacity = '0.6';
-                ring.style.width     = '56px';
-                ring.style.height    = '56px';
-            });
-            el.addEventListener('mouseleave', () => {
-                cursor.style.width   = '10px';
-                cursor.style.height  = '10px';
-                cursor.style.opacity = '1';
-                ring.style.width     = '36px';
-                ring.style.height    = '36px';
-            });
-        });
-    }
 
     /* =============================================
        SCANLINE DE ENTRADA

@@ -1,0 +1,337 @@
+---
+interface Props {
+  name?: string;
+  title?: string;
+  headline?: string;
+  description?: string;
+  imageSrc?: string;
+  imageAlt?: string;
+}
+
+const {
+  name = "Juan Luis Gil Garrote",
+  title = "Desarrollador de Aplicaciones Multiplataforma",
+  headline = "Construyendo<br/>Soluciones Digitales.",
+  description = "Soy un desarrollador especializado en aplicaciones multiplataforma y sistemas de alto rendimiento. Mi trabajo conecta el backend con experiencias de usuario fluidas, asegurando que cada línea de código tenga un propósito estratégico.",
+  imageSrc = "/images/profile.jpg",
+  imageAlt = "Foto de perfil",
+} = Astro.props;
+---
+
+<section id="hero" class="hero-section">
+
+  <!-- COLUMNA IZQUIERDA -->
+  <div class="hero-left">
+
+    <!-- Status bar -->
+    <div class="hero-status" id="hero-status">
+      <span class="status-dot"></span>
+      <span class="status-text">SYSTEM STATUS: ONLINE / AVAILABLE</span>
+    </div>
+
+    <!-- Título principal -->
+    <h1 class="hero-headline" id="hero-headline" set:html={headline} />
+
+    <!-- Descripción -->
+    <p class="hero-desc" id="hero-desc">{description}</p>
+
+  </div>
+
+  <!-- COLUMNA DERECHA: imagen con frame -->
+  <div class="hero-right" id="hero-img">
+    <div class="img-frame">
+      <!-- Esquinas decorativas -->
+      <span class="corner corner--tl"></span>
+      <span class="corner corner--tr"></span>
+      <span class="corner corner--bl"></span>
+      <span class="corner corner--br"></span>
+
+      <div class="img-inner">
+        <img src={imageSrc} alt={imageAlt} />
+        <!-- Líneas de glitch -->
+        <div class="glitch-line" id="glitch1"></div>
+        <div class="glitch-line" id="glitch2"></div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script is:inline>
+document.addEventListener('DOMContentLoaded', () => {
+
+  /* ── STATUS BAR ───────────────────────────── */
+  anime({
+    targets: '#hero-status',
+    opacity: [0, 1],
+    translateX: [-16, 0],
+    duration: 600,
+    delay: 200,
+    easing: 'easeOutExpo'
+  });
+
+  /* ── TÍTULO: split en chars ───────────────── */
+  const headline = document.getElementById('hero-headline');
+  if (headline) {
+    // Wrap cada carácter preservando <br>
+    headline.innerHTML = headline.innerHTML
+      .split(/(<br\s*\/?>)/gi)
+      .map(part => /^<br/i.test(part) ? part :
+        [...part].map(ch =>
+          ch === ' ' ? '<span class="h-space"> </span>' :
+          `<span class="h-char">${ch}</span>`
+        ).join('')
+      ).join('');
+
+    headline.style.opacity = '1';
+
+    anime({
+      targets: '#hero-headline .h-char',
+      translateY: ['110%', '0%'],
+      opacity: [0, 1],
+      duration: 700,
+      delay: anime.stagger(28, { start: 500 }),
+      easing: 'easeOutExpo'
+    });
+  }
+
+  /* ── DESCRIPCIÓN ──────────────────────────── */
+  anime({
+    targets: '#hero-desc',
+    opacity: [0, 1],
+    translateY: [16, 0],
+    duration: 700,
+    delay: 1100,
+    easing: 'easeOutExpo'
+  });
+
+  /* ── IMAGEN ───────────────────────────────── */
+  anime({
+    targets: '#hero-img',
+    opacity: [0, 1],
+    translateX: [40, 0],
+    duration: 900,
+    delay: 400,
+    easing: 'easeOutExpo'
+  });
+
+  /* ── STATUS DOT PULSE ─────────────────────── */
+  anime({
+    targets: '.status-dot',
+    boxShadow: [
+      '0 0 0 0px rgba(0,255,156,0.7)',
+      '0 0 0 8px rgba(0,255,156,0)',
+    ],
+    duration: 1400,
+    easing: 'easeOutSine',
+    loop: true,
+    delay: 800
+  });
+
+  /* ── GLITCH RECURRENTE ────────────────────── */
+  function glitch() {
+    anime({
+      targets: '#glitch1',
+      width: [0, (Math.random() * 50 + 20) + '%'],
+      left: Math.random() * 40 + '%',
+      top: Math.random() * 80 + 10 + '%',
+      opacity: [0.8, 0],
+      duration: 260,
+      easing: 'easeOutExpo'
+    });
+    anime({
+      targets: '#glitch2',
+      width: [0, (Math.random() * 30 + 10) + '%'],
+      left: Math.random() * 60 + '%',
+      top: Math.random() * 70 + 15 + '%',
+      opacity: [0.5, 0],
+      duration: 160,
+      easing: 'easeOutExpo'
+    });
+    setTimeout(glitch, 3000 + Math.random() * 5000);
+  }
+  setTimeout(glitch, 2500);
+
+});
+</script>
+
+<style>
+  /* =============================================
+     SECCIÓN
+  ============================================= */
+  .hero-section {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 48px;
+    align-items: center;
+    min-height: 68vh;
+    padding: 0 64px;
+  }
+
+  /* =============================================
+     COLUMNA IZQUIERDA
+  ============================================= */
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  /* ── Status bar ── */
+  .hero-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--primary, #00ff9c);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-block;
+  }
+
+  .status-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--primary, #00ff9c);
+    text-transform: uppercase;
+  }
+
+  /* ── Título ── */
+  .hero-headline {
+    font-size: clamp(40px, 6vw, 68px);
+    font-weight: 900;
+    line-height: 1.05;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+    margin: 0;
+    opacity: 0; /* anime lo activa */
+  }
+
+  /* Wrapper por palabra para el overflow clip */
+  .hero-headline .h-char {
+    display: inline-block;
+    transform: translateY(110%);
+    opacity: 0;
+  }
+
+  .hero-headline .h-space {
+    display: inline-block;
+    width: 0.28em;
+  }
+
+  /* ── Descripción ── */
+  .hero-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--on-surface-variant, #8a9994);
+    max-width: 520px;
+    margin: 0;
+    opacity: 0;
+  }
+
+  /* =============================================
+     COLUMNA DERECHA — FRAME DE IMAGEN
+  ============================================= */
+  .hero-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+  }
+
+  .img-frame {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    padding: 12px;
+    background: rgba(18, 20, 20, 0.4);
+    border: 1px solid var(--outline-variant, rgba(64,73,69,0.35));
+  }
+
+  /* Esquinas decorativas verdes */
+  .corner {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-color: var(--primary, #00ff9c);
+    border-style: solid;
+    z-index: 2;
+  }
+
+  .corner--tl { top: -1px; left: -1px;  border-width: 2px 0 0 2px; }
+  .corner--tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+  .corner--bl { bottom: -1px; left: -1px;  border-width: 0 0 2px 2px; }
+  .corner--br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+  .img-inner {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border: 1px solid rgba(64, 73, 69, 0.2);
+  }
+
+  .img-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    filter: grayscale(25%) brightness(0.82) contrast(1.05);
+    display: block;
+  }
+
+  /* Vignette sobre la foto */
+  .img-inner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 55%,
+      rgba(12, 14, 14, 0.55) 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Líneas de glitch */
+  .glitch-line {
+    position: absolute;
+    height: 1px;
+    background: var(--primary, #00ff9c);
+    left: 0;
+    width: 0;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* =============================================
+     RESPONSIVE
+  ============================================= */
+  @media (max-width: 900px) {
+    .hero-section {
+      grid-template-columns: 1fr;
+      padding: 48px 32px;
+      min-height: auto;
+      gap: 40px;
+    }
+    .hero-right {
+      order: -1; /* imagen arriba en móvil */
+    }
+    .img-frame {
+      max-width: 300px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-section { padding: 32px 20px; }
+    .hero-headline { font-size: 36px; }
+  }
+</style>

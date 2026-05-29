@@ -3,261 +3,656 @@ import "../global.css";
 ---
 
 <div class="outer-wrapper">
-  <div class="card">
-    <div class="accent-bar"></div>
 
-    <h2 class="title">Transmission</h2>
+  <!-- Partículas de fondo -->
+  <canvas id="particles-bg"></canvas>
+
+  <div class="card" id="contact-card">
+
+    <div class="terminal-bar">
+      <div class="terminal-dots">
+        <span class="dot dot--r"></span>
+        <span class="dot dot--y"></span>
+        <span class="dot dot--g"></span>
+      </div>
+      <span class="terminal-title">CONTACT_FORM.exe</span>
+      <span class="terminal-status" id="t-status">IDLE</span>
+    </div>
+
+    <div class="accent-bar" id="accent-bar"></div>
+
+    <div class="card-header">
+      <h2 class="title" id="main-title"><span id="typed-title"></span><span class="cursor-blink">█</span></h2>
+      <div class="scan-line" id="scan-line"></div>
+    </div>
+
+    <div class="tx-indicator" id="tx-indicator">
+      <span class="tx-dot"></span>
+      <span class="tx-text">AWAITING_INPUT</span>
+      <div class="tx-bars">
+        <span class="tx-bar"></span>
+        <span class="tx-bar"></span>
+        <span class="tx-bar"></span>
+        <span class="tx-bar"></span>
+        <span class="tx-bar"></span>
+      </div>
+    </div>
 
     <form id="transmission-form" class="form">
-      <div class="field">
-        <label class="label" for="name">Nombre del Operador</label>
-        <input
-          class="input"
-          id="name"
-          name="from_name"
-          placeholder="John Doe"
-          required
-          type="text"
-        />
+
+      <div class="field" id="field-name">
+        <label class="label" for="name">
+          <span class="label-prefix">&gt;_</span> Nombre del Operador
+        </label>
+        <div class="input-wrapper">
+          <input class="input" id="name" name="from_name"
+            placeholder="John" required type="text" autocomplete="off" />
+          <div class="input-line"></div>
+          <div class="input-glow"></div>
+        </div>
+        <span class="field-hint" id="hint-name">ESPERANDO ENTRADA...</span>
       </div>
 
-      <div class="field">
-        <label class="label" for="email">Correo Electrónico</label>
-        <input
-          class="input"
-          id="email"
-          name="from_email"
-          placeholder="john@example.com"
-          required
-          type="email"
-        />
+      <div class="field" id="field-email">
+        <label class="label" for="email">
+          <span class="label-prefix">&gt;_</span> Correo Electrónico
+        </label>
+        <div class="input-wrapper">
+          <input class="input" id="email" name="from_email"
+            placeholder="john@example.com" required type="email" autocomplete="off" />
+          <div class="input-line"></div>
+          <div class="input-glow"></div>
+        </div>
+        <span class="field-hint" id="hint-email">ESPERANDO ENTRADA...</span>
       </div>
 
-      <div class="field">
-        <label class="label" for="message">Descripción</label>
-        <textarea
-          class="input textarea custom-scrollbar"
-          id="message"
-          name="message"
-          placeholder="Briefly describe your project or collaboration opportunity..."
-          required
-          rows="5"></textarea>
+      <div class="field" id="field-message">
+        <label class="label" for="message">
+          <span class="label-prefix">&gt;_</span> Descripción
+        </label>
+        <div class="input-wrapper">
+          <textarea class="input textarea custom-scrollbar" id="message"
+            name="message" placeholder="Escribe tu mensaje aquí..."
+            required rows="5"></textarea>
+          <div class="input-line"></div>
+          <div class="input-glow"></div>
+        </div>
+        <span class="field-hint" id="hint-message">ESPERANDO ENTRADA...</span>
       </div>
 
-      <button class="btn glow-btn" type="submit">ENVIAR</button>
+      <button class="btn glow-btn" type="submit" id="submit-btn">
+        <span class="btn-text">ENVIAR TRANSMISIÓN</span>
+        <span class="btn-arrow">→</span>
+        <div class="btn-scan"></div>
+      </button>
+
     </form>
+
+    <div class="success-overlay" id="success-overlay">
+      <div class="success-content">
+        <div class="success-icon" id="success-icon">✓</div>
+        <p class="success-msg" id="success-msg"></p>
+        <p class="success-sub">TRANSMISIÓN_COMPLETADA</p>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <style>
-  /* ── Outer wrapper with dark grid background ── */
+  * { box-sizing: border-box; }
+
   .outer-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     padding: 2rem;
-    background-color: #0f1110;
+    background-color: #0a0c0b;
     background-image:
-      linear-gradient(rgba(0, 255, 156, 0.07) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 255, 156, 0.07) 1px, transparent 1px);
-    background-size: 32px 32px;
-    font-family: "JetBrains Mono", "Fira Mono", "Courier New", monospace;
-  }
-
-  /* ── Card ── */
-  .card {
+      linear-gradient(rgba(0,255,156,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,156,0.04) 1px, transparent 1px);
+    background-size: 28px 28px;
+    font-family: "JetBrains Mono","Fira Mono","Courier New",monospace;
     position: relative;
-    background-color: #1a1c1c;
-    border: 1px solid #232d25;
-    padding: 2rem 2.2rem;
-    max-width: 480px;
-    width: 100%;
-    color: white;
     overflow: hidden;
   }
 
-  /* ── Left accent bar ── */
-  .accent-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 2px;
-    height: 100%;
-    background-color: #00ff9c;
-    opacity: 0.6;
+  #particles-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
   }
 
-  /* ── Title ── */
+  .card {
+    position: relative;
+    background-color: #111413;
+    border: 1px solid #1e2920;
+    max-width: 500px;
+    width: 100%;
+    color: white;
+    overflow: hidden;
+    z-index: 1;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  /* ── Terminal bar ── */
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #0d0f0e;
+    border-bottom: 1px solid #1e2920;
+    padding: 10px 16px;
+  }
+  .terminal-dots { display: flex; gap: 6px; }
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .dot--r { background: #3a1a1a; }
+  .dot--y { background: #3a3020; }
+  .dot--g { background: #1a3020; }
+  .terminal-title {
+    font-size: 10px;
+    color: #4a5e50;
+    letter-spacing: 0.1em;
+    flex: 1;
+  }
+  .terminal-status {
+    font-size: 10px;
+    color: #00ff9c;
+    letter-spacing: 0.12em;
+    animation: statusPulse 2s ease-in-out infinite;
+  }
+  @keyframes statusPulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ── Accent bar ── */
+  .accent-bar {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    width: 2px;
+    height: 0;
+    background: linear-gradient(to bottom, #00ff9c, transparent);
+    transition: height 1s ease;
+  }
+
+  /* ── Header ── */
+  .card-header {
+    padding: 24px 28px 0;
+    position: relative;
+  }
+
   .title {
-    font-size: 1.65rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 700;
     color: #f3fff3;
-    margin: 0 0 1.4rem 0;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #232d25;
+    margin: 0 0 4px 0;
     letter-spacing: 0.04em;
-    font-family: inherit;
+    min-height: 2rem;
+  }
+
+  .cursor-blink {
+    color: #00ff9c;
+    animation: blink 1s step-end infinite;
+    font-size: 1.1rem;
+    vertical-align: middle;
+  }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+  .scan-line {
+    position: absolute;
+    left: 0; right: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00ff9c, transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.6s ease;
+  }
+
+  /* ── TX Indicator ── */
+  .tx-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 28px 18px;
+    border-bottom: 1px solid #1a2218;
+    opacity: 0;
+  }
+  .tx-dot {
+    width: 6px; height: 6px;
+    background: #00ff9c;
+    border-radius: 50%;
+    animation: statusPulse 1.2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  .tx-text {
+    font-size: 9px;
+    color: #00ff9c;
+    letter-spacing: 0.14em;
+    flex: 1;
+  }
+  .tx-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 12px;
+  }
+  .tx-bar {
+    width: 3px;
+    background: #00ff9c;
+    border-radius: 1px;
+    opacity: 0.3;
+    animation: barPulse 1s ease-in-out infinite;
+  }
+  .tx-bar:nth-child(1) { height: 4px;  animation-delay: 0s; }
+  .tx-bar:nth-child(2) { height: 8px;  animation-delay: 0.15s; }
+  .tx-bar:nth-child(3) { height: 12px; animation-delay: 0.3s; }
+  .tx-bar:nth-child(4) { height: 8px;  animation-delay: 0.45s; }
+  .tx-bar:nth-child(5) { height: 4px;  animation-delay: 0.6s; }
+  @keyframes barPulse {
+    0%,100% { opacity: 0.2; }
+    50% { opacity: 0.9; }
   }
 
   /* ── Form ── */
   .form {
     display: flex;
     flex-direction: column;
-    gap: 1.4rem;
+    gap: 20px;
+    padding: 24px 28px 28px;
   }
 
-  /* ── Field ── */
   .field {
     display: flex;
     flex-direction: column;
-    gap: 0.45rem;
+    gap: 6px;
+    opacity: 0;
+    transform: translateX(-12px);
   }
 
-  /* ── Labels ── */
   .label {
-    font-size: 10px;
-    color: #849587;
+    font-size: 9px;
+    color: #4a5e50;
     text-transform: uppercase;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.2em;
     font-weight: 600;
-    font-family: inherit;
     transition: color 0.2s;
   }
-
-  .label.active {
+  .label-prefix {
     color: #00ff9c;
+    margin-right: 4px;
+    font-size: 9px;
+  }
+  .label.active { color: #00ff9c; }
+
+  .input-wrapper {
+    position: relative;
   }
 
-  /* ── Inputs & Textarea ── */
   .input {
     width: 100%;
-    box-sizing: border-box;
-    background-color: #121414;
-    border: 1px solid #232d25;
+    background-color: #0c0e0d;
+    border: 1px solid #1e2920;
     color: #b9cbbc;
     font-family: inherit;
     font-size: 0.82rem;
-    padding: 0.7rem 1rem;
+    padding: 0.65rem 1rem;
     outline: none;
     border-radius: 0;
-    transition: border-color 0.2s;
+    transition: border-color 0.3s, background-color 0.3s;
     display: block;
+    caret-color: #00ff9c;
+  }
+  .input::placeholder { color: rgba(132,149,135,0.3); }
+  .input:focus { border-color: transparent; background-color: #0f1210; }
+
+  /* Línea inferior animada */
+  .input-line {
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px;
+    width: 0;
+    background: #00ff9c;
+    transition: width 0.4s cubic-bezier(0.65,0,0.35,1);
+    pointer-events: none;
+  }
+  .input-wrapper:focus-within .input-line { width: 100%; }
+
+  /* Glow sutil bajo el input en focus */
+  .input-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    box-shadow: 0 0 0 0 rgba(0,255,156,0);
+    transition: box-shadow 0.4s ease;
+  }
+  .input-wrapper:focus-within .input-glow {
+    box-shadow: 0 4px 20px -4px rgba(0,255,156,0.15);
   }
 
-  .input::placeholder {
-    color: rgba(132, 149, 135, 0.4);
+  /* Hint debajo del campo */
+  .field-hint {
+    font-size: 8px;
+    color: #2a3e30;
+    letter-spacing: 0.15em;
+    transition: color 0.3s;
   }
+  .field-hint.typing { color: #00ff9c; animation: statusPulse 0.8s ease-in-out infinite; }
+  .field-hint.done   { color: #3a8a60; animation: none; }
 
-  .input:focus {
-    border-color: #00ff9c;
-  }
+  .textarea { resize: none; }
 
-  .textarea {
-    resize: none;
-  }
-
-  /* ── Button ── */
+  /* ── Submit button ── */
   .btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 0.65rem;
+    gap: 10px;
     background-color: #00ff9c;
-    color: #00391f;
-    padding: 0.7rem 1.4rem;
+    color: #002a17;
+    padding: 0.75rem 1.6rem;
     font-family: inherit;
     font-size: 0.72rem;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     border: none;
     border-radius: 0;
     cursor: pointer;
-    transition:
-      opacity 0.15s,
-      transform 0.1s;
+    overflow: hidden;
     width: fit-content;
+    transition: transform 0.1s;
+  }
+  .btn:hover { opacity: 0.92; }
+  .btn:active { transform: scale(0.97); }
+
+  .btn-scan {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 50%, transparent 100%);
+    transform: translateX(-150%);
+    pointer-events: none;
+  }
+  .btn:hover .btn-scan {
+    animation: btnScan 0.55s ease forwards;
+  }
+  @keyframes btnScan {
+    from { transform: translateX(-150%); }
+    to   { transform: translateX(150%); }
   }
 
-  .btn:hover {
-    opacity: 0.9;
-  }
-
-  .btn:active {
-    transform: scale(0.97);
-  }
-
-  .glow-btn {
-    box-shadow: 0 0 14px rgba(0, 255, 156, 0.45);
-  }
-
-  .arrow-icon {
-    font-size: 17px;
+  .btn-arrow {
+    font-size: 15px;
     font-weight: 700;
-    transition: transform 0.2s;
+    transition: transform 0.2s ease;
   }
+  .btn:hover .btn-arrow { transform: translateX(4px); }
 
-  .btn:hover .arrow-icon {
-    transform: translateX(3px);
-  }
+  .glow-btn { box-shadow: 0 0 18px rgba(0,255,156,0.4); }
 
-  /* ── Custom scrollbar ── */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
+  /* ── Success overlay ── */
+  .success-overlay {
+    position: absolute;
+    inset: 0;
+    background: #0a0c0b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
   }
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: #121414;
+  .success-overlay.visible {
+    opacity: 1;
+    pointer-events: all;
   }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #3b4b3f;
+  .success-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
   }
+  .success-icon {
+    width: 64px; height: 64px;
+    border: 2px solid #00ff9c;
+    color: #00ff9c;
+    font-size: 28px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: scale(0);
+    transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .success-overlay.visible .success-icon {
+    transform: scale(1);
+  }
+  .success-msg {
+    font-size: 0.75rem;
+    color: #00ff9c;
+    letter-spacing: 0.1em;
+    margin: 0;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.4s 0.3s ease;
+  }
+  .success-overlay.visible .success-msg { opacity: 1; }
+  .success-sub {
+    font-size: 9px;
+    color: #2a4a35;
+    letter-spacing: 0.2em;
+    margin: 0;
+    opacity: 0;
+    transition: opacity 0.4s 0.5s ease;
+  }
+  .success-overlay.visible .success-sub { opacity: 1; }
+
+  /* ── Scrollbar ── */
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: #0c0e0d; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: #2a3e30; }
 </style>
 
-<!-- Material Symbols for the arrow icon -->
-<link
-  rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@18,700,0,0"
-/>
-<script
-  type="text/javascript"
-  src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
-></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@18,700,0,0" />
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
 <script type="text/javascript">
-  // Public Key: found in EmailJS dashboard → Account → API Keys
   emailjs.init("l4-yuFeM2N6y-3qRj");
 </script>
 
 <script type="text/javascript">
-  const serviceID = "service_9smuobg";
+(function () {
+
+  /* ── PARTÍCULAS ─────────────────────────────────────────────── */
+  const canvas = document.getElementById('particles-bg');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 0; i < 55; i++) {
+    particles.push({
+      x: Math.random() * 2000,
+      y: Math.random() * 1200,
+      r: Math.random() * 1.2 + 0.3,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: -Math.random() * 0.4 - 0.1,
+      a: Math.random() * 0.35 + 0.05
+    });
+  }
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x % W, p.y % H, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0,255,156,${p.a})`;
+      ctx.fill();
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.y < 0) p.y = H;
+    });
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+
+  /* ── TYPEWRITER del título ──────────────────────────────────── */
+  const TITLE = 'Formulario de Contacto';
+  const typed = document.getElementById('typed-title');
+  let i = 0;
+  function typeChar() {
+    if (i <= TITLE.length) {
+      typed.textContent = TITLE.slice(0, i);
+      i++;
+      setTimeout(typeChar, 55 + Math.random() * 40);
+    }
+  }
+
+  /* ── ENTRADA DE LA CARD ─────────────────────────────────────── */
+  anime({
+    targets: '.card',
+    opacity: [0, 1],
+    translateY: [28, 0],
+    duration: 900,
+    delay: 300,
+    easing: 'easeOutExpo',
+    complete() {
+      // accent bar
+      document.getElementById('accent-bar').style.height = '100%';
+      // scan line
+      document.getElementById('scan-line').style.transform = 'scaleX(1)';
+      // typewriter
+      setTimeout(typeChar, 200);
+      // tx indicator
+      anime({
+        targets: '#tx-indicator',
+        opacity: [0, 1],
+        translateY: [-8, 0],
+        duration: 500,
+        delay: 400,
+        easing: 'easeOutExpo'
+      });
+      // campos stagger
+      anime({
+        targets: '.field',
+        opacity: [0, 1],
+        translateX: [-14, 0],
+        duration: 500,
+        delay: anime.stagger(100, { start: 600 }),
+        easing: 'easeOutExpo'
+      });
+      // botón
+      anime({
+        targets: '#submit-btn',
+        opacity: [0, 1],
+        translateY: [12, 0],
+        duration: 500,
+        delay: 1100,
+        easing: 'easeOutExpo'
+      });
+    }
+  });
+
+  document.querySelectorAll('input, textarea').forEach(function (el) {
+    const field = el.closest('.field');
+    const label = field?.querySelector('.label');
+    const hint  = field?.querySelector('.field-hint');
+
+    el.addEventListener('focus', () => {
+      label?.classList.add('active');
+      if (hint) { hint.textContent = 'ESCRIBIENDO...'; hint.className = 'field-hint typing'; }
+    });
+
+    el.addEventListener('blur', () => {
+      label?.classList.remove('active');
+      if (hint) {
+        if (el.value.trim()) {
+          hint.textContent = 'INPUT_OK ✓';
+          hint.className = 'field-hint done';
+        } else {
+          hint.textContent = 'ESPERANDO ENTRADA...';
+          hint.className = 'field-hint';
+        }
+      }
+    });
+
+    el.addEventListener('input', () => {
+      document.getElementById('terminal-status') || null;
+      const ts = document.querySelector('.terminal-status');
+      if (ts) ts.textContent = 'ACTIVE';
+    });
+  });
+
+  const serviceID  = "service_9smuobg";
   const templateID = "template_ktjilop";
+  const form       = document.getElementById('transmission-form');
+  const overlay    = document.getElementById('success-overlay');
+  const successMsg = document.getElementById('success-msg');
+  const tStatus    = document.querySelector('.terminal-status');
+  const txText     = document.querySelector('.tx-text');
 
-  const form = document.getElementById("transmission-form");
+  // Efecto de envío en el botón
+  function animateSend() {
+    if (tStatus) tStatus.textContent = 'TRANSMITTING...';
+    if (txText)  txText.textContent  = 'ENVIANDO...';
 
-  form.addEventListener("submit", function (event) {
-    event.preventDefault();
+    // Efecto glitch en card
+    anime({
+      targets: '.card',
+      translateX: [0, -3, 3, -2, 2, 0],
+      duration: 400,
+      easing: 'easeInOutSine'
+    });
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    animateSend();
 
     const templateParams = {
-      from_name: document.getElementById("name").value,
-      from_email: document.getElementById("email").value,
-      message: document.getElementById("message").value,
-      reply_to: document.getElementById("email").value,
+      from_name:  document.getElementById('name').value,
+      from_email: document.getElementById('email').value,
+      message:    document.getElementById('message').value,
+      reply_to:   document.getElementById('email').value,
     };
 
     emailjs.send(serviceID, templateID, templateParams).then(
       function () {
-        alert("¡Correo enviado con éxito!");
+        if (successMsg) successMsg.textContent = '¡CORREO ENVIADO CON ÉXITO!';
+        overlay?.classList.add('visible');
+        if (tStatus) tStatus.textContent = 'COMPLETED';
         form.reset();
+        document.querySelectorAll('.field-hint').forEach(h => {
+          h.textContent = 'ESPERANDO ENTRADA...';
+          h.className = 'field-hint';
+        });
       },
       function (err) {
-        alert("Hubo un error al enviar: " + JSON.stringify(err));
+        if (tStatus) tStatus.textContent = 'ERROR';
+        alert('Hubo un error al enviar: ' + JSON.stringify(err));
       }
     );
   });
 
-  // Label highlight on focus
-  document.querySelectorAll("input, textarea").forEach(function (el) {
-    const label = el.closest(".field")?.querySelector(".label");
-    el.addEventListener("focus", function () { label?.classList.add("active"); });
-    el.addEventListener("blur", function () { label?.classList.remove("active"); });
+  overlay?.addEventListener('click', () => {
+    overlay.classList.remove('visible');
+    if (tStatus) tStatus.textContent = 'IDLE';
+    if (txText)  txText.textContent  = 'AWAITING_INPUT';
   });
+
+})();
 </script>
