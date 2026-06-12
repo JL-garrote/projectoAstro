@@ -1,4 +1,5 @@
 ---
+import foto from '../assets/foto.png';
 import Layout from '../layouts/Layout.astro';
 import Proyectos from '../components/proyectos.astro';
 
@@ -50,7 +51,7 @@ const imagenEntorno = "/assets/entorno.jpg";
         <div class="hero-image-wrapper" id="hero-img">
             <div class="tech-frame" id="tech-frame">
                 <div class="image-container">
-                    <img src={imagenEntorno} alt="Entorno de desarrollo Backend multiscreen" />
+                    <img src={typeof foto === 'string' ? foto : foto.src} alt="Entorno de desarrollo Backend multiscreen" />
                     <div class="glitch-line" id="glitch1"></div>
                     <div class="glitch-line" id="glitch2"></div>
                 </div>

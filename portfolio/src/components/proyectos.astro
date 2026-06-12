@@ -1,36 +1,18 @@
 ---
-// Datos de tus proyectos (puedes editarlos, añadir o quitar fácilmente)
+
+import teamPulseImage from '../assets/port.png';
+
 const proyectos = [
   {
     tagTop: "Production",
-    title: "Team Pulse",
-    description: "Sistema hecho para la gestion de escuelas deportivas de cualquier deporte",
-    tags: ["#Astro.js", "#Java", "#Spring Boot", "#REST API"],
+    title: "Portfolio Personal",
+    description: "",
+    tags: ["#Astro.js", "#TailwindCSS", "#Vite"],
     linkSource: "#",
     linkLive: "#",
-    image: "portfolio/public/assets/teamPulse.png",
+    image: teamPulseImage,
     iconType: "code"
-  },
-  {
-    tagTop: "Production",
-    title: "Net_Architect",
-    description: "Visual infrastructure-as-code designer. Automatically maps complex AWS deployments into interactive 3D nodes.",
-    tags: ["#TypeScript", "#ThreeJS", "#AWS"],
-    linkSource: "#",
-    linkLive: "#",
-    image: "/assets/project2.jpg",
-    iconType: "sparkle"
-  },
-  {
-    tagTop: "Production",
-    title: "Vault_OS",
-    description: "Open-source zero-trust authentication layer with hardware-level encryption support for enterprise web apps.",
-    tags: ["#Go", "#Docker", "#Redis"],
-    linkSource: "#",
-    linkLive: "#",
-    image: "/assets/project3.jpg",
-    iconType: "shield"
-  },
+  }
 ];
 ---
 
@@ -41,7 +23,7 @@ const proyectos = [
         
         <div class="card-image-wrapper">
           <span class="project-status-tag text-code-md">{project.tagTop}</span>
-          <img src={project.image} alt={`Preview de ${project.title}`} />
+          <img src={typeof project.image === 'string' ? project.image : project.image.src} alt={`Preview de ${project.title}`} />
         </div>
 
         <div class="card-content">
@@ -72,18 +54,8 @@ const proyectos = [
 
           <hr class="card-divider" />
 
-          <div class="card-links text-code-md">
-            <a href={project.linkSource} class="link-item">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-              SOURCE_CODE
-            </a>
-            <a href={project.linkLive} class="link-item">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-              INTERACTIVE_PREVIEW
-            </a>
-          </div>
+          
         </div>
-
       </div>
     ))}
   </div>

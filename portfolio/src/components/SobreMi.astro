@@ -1,4 +1,6 @@
 ---
+import foto from '../assets/foto.png';
+
 interface Props {
   name?: string;
   title?: string;
@@ -12,8 +14,8 @@ const {
   name = "Juan Luis Gil Garrote",
   title = "Desarrollador de Aplicaciones Multiplataforma",
   headline = "Construyendo<br/>Soluciones Digitales.",
-  description = "Soy un desarrollador especializado en aplicaciones multiplataforma y sistemas de alto rendimiento. Mi trabajo conecta el backend con experiencias de usuario fluidas, asegurando que cada línea de código tenga un propósito estratégico.",
-  imageSrc = "/images/profile.jpg",
+  description = "Desarrollador full stack con experiencia liderando un producto en producción de principio a fin: arquitectura, desarrollo, despliegue cloud y datos. Domino el stack moderno de JavaScript (Next.js, TypeScript, Node, API REST) y trabajo con AWS, Vercel, CI/CD y MySQL en entornos reales con usuarios. Acostumbrado a asumir responsabilidad técnica completa: traduzco requisitos de negocio en software funcionando, sin necesidad de supervisión constante. Perfil autodidacta con experiencia internacional, capacidad de entrega y hambre de proyecto",
+  imageSrc = foto,
   imageAlt = "Foto de perfil",
 } = Astro.props;
 ---
@@ -47,7 +49,7 @@ const {
       <span class="corner corner--br"></span>
 
       <div class="img-inner">
-        <img src={imageSrc} alt={imageAlt} />
+        <img src={typeof imageSrc === 'string' ? imageSrc : imageSrc.src} alt={imageAlt} />
         <!-- Líneas de glitch -->
         <div class="glitch-line" id="glitch1"></div>
         <div class="glitch-line" id="glitch2"></div>
