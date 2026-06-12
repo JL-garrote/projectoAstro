@@ -19,11 +19,22 @@
                     <h3 class="entry-role">Desarrollador Full Stack</h3>
                     <span class="entry-date">3 meses — PRESENCIAL.</span>
                 </div>
-                <p class="entry-company">Elenco Ahorro - Mairena del Aljarafe</p>
+                <p class="entry-company">
+                    Elenco Ahorro - Mairena del Aljarafe
+                </p>
                 <p class="entry-desc">
-                    Desarrollo de aplicaciones web. Mas especifico un CRM completo para una consultoría energética.
-                    Implementación de APIs REST y gestión de bases de
-                    datos relacionales.
+                    Gestión y planificación integral de un proyecto CRM-ERP para
+                    consultoría energética: análisis de requisitos con negocio,
+                    diseño funcional, desarrollo y puesta en producción. Diseño
+                    de la arquitectura API REST desacoplada: frontend en Next.js
+                    sobre Vercel y backend en TypeScript / TypeORM sobre AWS,
+                    con pipelines de despliegue independientes. Desarrollo de
+                    módulos de gestión de contratos, campañas y cartera de
+                    clientes, con cuadros de mando y control de KPIs comerciales
+                    para la toma de decisiones. Modelado de la base de datos y
+                    dirección del paso a producción: migración completa de datos
+                    entre entornos sin interrupción del servicio ni pérdida de
+                    información..
                 </p>
             </div>
         </div>
@@ -97,9 +108,6 @@
 
 <script is:inline>
     document.addEventListener("DOMContentLoaded", () => {
-        /* =============================================
-     CURSOR PERSONALIZADO
-  ============================================= */
         const cursor = document.getElementById("cursor");
         const ring = document.getElementById("cursor-ring");
 
@@ -127,9 +135,6 @@
             tickCursor();
         }
 
-        /* =============================================
-     SCANLINE DE ENTRADA
-  ============================================= */
         anime({
             targets: "#scanline",
             top: ["0%", "100%"],
@@ -143,9 +148,6 @@
             },
         });
 
-        /* =============================================
-     ANIMACIÓN DE ENTRADA — TÍTULOS Y ENTRIES
-  ============================================= */
         anime({
             targets: ".section-title",
             opacity: [0, 1],
@@ -164,9 +166,6 @@
             easing: "easeOutExpo",
         });
 
-        /* =============================================
-     HOVER EN ENTRIES
-  ============================================= */
         document.querySelectorAll(".entry").forEach((entry) => {
             entry.addEventListener("mouseenter", () => {
                 anime({
@@ -189,9 +188,6 @@
 </script>
 
 <style>
-    /* =============================================
-     CURSOR
-  ============================================= */
     .cursor {
         position: fixed;
         width: 10px;
@@ -221,9 +217,6 @@
             height 0.3s ease;
     }
 
-    /* =============================================
-     SCANLINE
-  ============================================= */
     .scanline {
         position: fixed;
         top: 0;
@@ -241,9 +234,6 @@
         z-index: 200;
     }
 
-    /* =============================================
-     NOISE
-  ============================================= */
     .noise {
         position: fixed;
         inset: 0;
@@ -253,14 +243,11 @@
         opacity: 0.35;
     }
 
-    /* =============================================
-     LAYOUT: DOS COLUMNAS
-  ============================================= */
     .hero-container {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: var(--gap-xl, 48px);
-        padding: var(--gap-xl, 48px) 64px; /* ← cambia el 0 por 64px (o más si quieres) */
+        padding: var(--gap-xl, 48px) 64px;
     }
 
     .col {
@@ -269,9 +256,6 @@
         gap: 0;
     }
 
-    /* =============================================
-     TÍTULO DE SECCIÓN
-  ============================================= */
     .section-title {
         font-size: 36px;
         font-weight: 800;
@@ -281,9 +265,6 @@
         opacity: 0;
     }
 
-    /* =============================================
-     ENTRY (ITEM DE EXPERIENCIA / EDUCACIÓN)
-  ============================================= */
     .entry {
         display: flex;
         gap: 16px;
@@ -294,7 +275,6 @@
         position: relative;
     }
 
-    /* Línea vertical conectora */
     .entry:not(:last-child)::after {
         content: "";
         position: absolute;
@@ -305,7 +285,6 @@
         background: var(--outline-variant, rgba(64, 73, 69, 0.4));
     }
 
-    /* Marcador cuadrado verde */
     .entry-marker {
         width: 8px;
         height: 8px;
@@ -365,9 +344,6 @@
         max-width: 480px;
     }
 
-    /* =============================================
-     RESPONSIVE
-  ============================================= */
     @media (max-width: 768px) {
         .hero-container {
             grid-template-columns: 1fr;
