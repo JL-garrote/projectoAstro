@@ -2,6 +2,7 @@
 import foto from '../assets/foto.png';
 import Layout from '../layouts/Layout.astro';
 import Proyectos from '../components/proyectos.astro';
+import Educacion from '../components/Educacion.astro';
 
 
 const imagenEntorno = "/assets/entorno.jpg";
@@ -61,6 +62,30 @@ const imagenEntorno = "/assets/entorno.jpg";
 
     </section>
 
+    <section id="sobre-mi" class="about-container">
+
+        <div class="stack-header">
+            <div class="stack-title-group">
+                <span class="subtitle-tech text-code-md" id="al1">Quién soy</span>
+                <h3 class="stack-main-title" id="at1">Sobre mí</h3>
+            </div>
+        </div>
+
+        <div class="about-content">
+            <p class="about-text" id="about-text">
+                Desarrollador full stack con experiencia liderando un producto en producción de principio a fin: arquitectura, desarrollo, despliegue cloud y datos. Domino el stack moderno de JavaScript (Next.js, TypeScript, Node, API REST) y trabajo con AWS, Vercel, CI/CD y MySQL en entornos reales con usuarios. Acostumbrado a asumir responsabilidad técnica completa: traduzco requisitos de negocio en software funcionando, sin necesidad de supervisión constante. Perfil autodidacta con experiencia internacional, capacidad de entrega y hambre de proyecto.
+            </p>
+
+            <ul class="about-highlights" id="about-highlights">
+                <li><span class="li-arrow">&gt;</span> Liderazgo técnico end-to-end: arquitectura, desarrollo y despliegue</li>
+                <li><span class="li-arrow">&gt;</span> Stack moderno JS/TS — Next.js, Node.js, API REST</li>
+                <li><span class="li-arrow">&gt;</span> Cloud &amp; datos — AWS, Vercel, CI/CD, MySQL</li>
+                <li><span class="li-arrow">&gt;</span> Perfil autodidacta con experiencia internacional</li>
+            </ul>
+        </div>
+
+    </section>
+
     <section id="tech-stack" class="stack-container">
 
         <div class="stack-header">
@@ -104,6 +129,8 @@ const imagenEntorno = "/assets/entorno.jpg";
 
         </div>
     </section>
+
+    <Educacion />
 
     <Proyectos />
 
@@ -262,6 +289,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!entry.isIntersecting) return;
             const el = entry.target;
 
+            /* --- SOBRE MI --- */
+            if (el.id === 'sobre-mi') {
+                anime({ targets: '#al1', opacity: [0, 1], translateX: [-12, 0], duration: 500, easing: 'easeOutExpo' });
+                anime({ targets: '#at1', opacity: [0, 1], translateY: [14, 0], duration: 600, delay: 150, easing: 'easeOutExpo' });
+                anime({ targets: '#about-text', opacity: [0, 1], translateY: [18, 0], duration: 700, delay: 250, easing: 'easeOutExpo' });
+                anime({ targets: '#about-highlights li', opacity: [0, 1], translateX: [-10, 0], duration: 500, delay: anime.stagger(80, { start: 400 }), easing: 'easeOutExpo' });
+                io.unobserve(el);
+            }
+
             /* --- TECH STACK --- */
             if (el.id === 'tech-stack') {
                 anime({ targets: '#sl1', opacity: [0, 1], translateX: [-12, 0], duration: 500, easing: 'easeOutExpo' });
@@ -327,8 +363,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, { threshold: 0.2 });
 
+    const sobreMi     = document.getElementById('sobre-mi');
     const techStack   = document.getElementById('tech-stack');
     const counterRow  = document.getElementById('counter-row');
+    if (sobreMi)    io.observe(sobreMi);
     if (techStack)  io.observe(techStack);
     if (counterRow) io.observe(counterRow);
 
@@ -602,6 +640,59 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* =============================================
+       SOBRE MI
+    ============================================= */
+    .about-container {
+        display: flex;
+        flex-direction: column;
+        gap: var(--gap-xl);
+        margin-top: var(--gap-xl);
+    }
+
+    .about-content {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr;
+        gap: var(--gap-xl);
+        align-items: start;
+    }
+
+    .about-text {
+        color: var(--on-surface-variant);
+        font-size: 16px;
+        line-height: 1.75;
+        margin: 0;
+        opacity: 0;
+    }
+
+    .about-highlights {
+        list-style: none;
+        margin: 0;
+        padding: 0 0 0 24px;
+        border-left: 1px solid var(--outline-variant);
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .about-highlights li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--on-surface-variant);
+        opacity: 0;
+    }
+
+    .li-arrow {
+        color: var(--primary);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+
+    /* =============================================
        TECH STACK
     ============================================= */
     .stack-container {
@@ -785,6 +876,16 @@ document.addEventListener('DOMContentLoaded', () => {
             flex-direction: column;
             align-items: flex-start;
             gap: 16px;
+        }
+        .about-content {
+            grid-template-columns: 1fr;
+            gap: var(--gap-md);
+        }
+        .about-highlights {
+            border-left: none;
+            padding-left: 0;
+            border-top: 1px solid var(--outline-variant);
+            padding-top: 20px;
         }
     }
 

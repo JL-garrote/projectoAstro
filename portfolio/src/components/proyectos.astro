@@ -1,6 +1,7 @@
 ---
 
 import teamPulseImage from '../assets/port.png';
+import voyagerImage from '../assets/voyager.jpg';
 
 const proyectos = [
   {
@@ -12,11 +13,26 @@ const proyectos = [
     linkLive: "#",
     image: teamPulseImage,
     iconType: "code"
+  },
+  {
+    tagTop: "Production",
+    title: "Voyager",
+    description: "Planificador de viajes que estima el gasto real de combustible de tu ruta a partir de las especificaciones exactas de tu vehículo (cilindrada, cv, peso, transmisión, ocupantes...), combinando el trazado de la ruta con la API de Gemini para una predicción contextual.",
+    tags: ["#Astro.js", "#SpringBoot", "#Java", "#GeminiAPI"],
+    linkSource: "#",
+    linkLive: "https://voyager-bice.vercel.app",
+    image: voyagerImage,
+    iconType: "sparkle"
   }
 ];
 ---
 
 <section id="projects" class="projects-section">
+  <div class="projects-header" id="pj-header">
+    <span class="subtitle-tech text-code-md">Portfolio</span>
+    <h3 class="projects-title">Proyectos</h3>
+  </div>
+
   <div class="projects-grid">
     {proyectos.map((project) => (
       <div class="project-card">
@@ -54,17 +70,95 @@ const proyectos = [
 
           <hr class="card-divider" />
 
-          
+          {(project.linkLive !== "#" || project.linkSource !== "#") && (
+            <div class="card-links">
+              {project.linkLive !== "#" && (
+                <a class="link-item" href={project.linkLive} target="_blank" rel="noopener noreferrer">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                  Ver proyecto
+                </a>
+              )}
+              {project.linkSource !== "#" && (
+                <a class="link-item" href={project.linkSource} target="_blank" rel="noopener noreferrer">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                  Código
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </div>
     ))}
   </div>
 </section>
 
+<script is:inline>
+document.addEventListener('DOMContentLoaded', () => {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+
+      anime({
+        targets: '#pj-header .subtitle-tech',
+        opacity: [0, 1],
+        translateX: [-12, 0],
+        duration: 500,
+        easing: 'easeOutExpo'
+      });
+      anime({
+        targets: '#pj-header .projects-title',
+        opacity: [0, 1],
+        translateY: [14, 0],
+        duration: 600,
+        delay: 150,
+        easing: 'easeOutExpo'
+      });
+      anime({
+        targets: '.project-card',
+        opacity: [0, 1],
+        translateY: [28, 0],
+        duration: 700,
+        delay: anime.stagger(130, { start: 250 }),
+        easing: 'easeOutExpo'
+      });
+
+      io.unobserve(entry.target);
+    });
+  }, { threshold: 0.15 });
+
+  const section = document.getElementById('projects');
+  if (section) io.observe(section);
+});
+</script>
+
 <style>
   .projects-section {
     width: 100%;
     background-color: transparent;
+  }
+
+  .projects-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: var(--gap-xl, 48px);
+  }
+
+  .subtitle-tech {
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    opacity: 0;
+  }
+
+  .projects-title {
+    font-size: 38px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+    letter-spacing: -0.01em;
+    opacity: 0;
   }
 
   /* Grid elástico idéntico a Figma (3 columnas que bajan a 2 y 1 automáticamente) */
@@ -81,6 +175,7 @@ const proyectos = [
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    opacity: 0;
     transition: border-color 0.2s ease, transform 0.2s ease;
   }
 

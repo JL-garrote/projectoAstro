@@ -2,12 +2,13 @@
 
 ---
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursor-ring"></div>
-<div class="scanline" id="scanline"></div>
-<div class="noise"></div>
+<section id="trayectoria" class="trayectoria-section">
+    <div class="trayectoria-header" id="tr-header">
+        <span class="subtitle-tech text-code-md">Trayectoria</span>
+        <h3 class="trayectoria-title">Experiencia &amp; Educación</h3>
+    </div>
 
-<section id="hero" class="hero-container">
+    <div class="hero-container">
     <!-- COLUMNA IZQUIERDA: EXPERIENCIA -->
     <div class="col">
         <h2 class="section-title">Experiencia</h2>
@@ -99,6 +100,7 @@
             </div>
         </div>
     </div>
+    </div>
 </section>
 
 <script
@@ -108,63 +110,53 @@
 
 <script is:inline>
     document.addEventListener("DOMContentLoaded", () => {
-        const cursor = document.getElementById("cursor");
-        const ring = document.getElementById("cursor-ring");
+        const io = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
 
-        if (cursor && ring) {
-            let mx = 0,
-                my = 0,
-                rx = 0,
-                ry = 0;
-            document.addEventListener("mousemove", (e) => {
-                mx = e.clientX;
-                my = e.clientY;
-                cursor.style.left = mx + "px";
-                cursor.style.top = my + "px";
-            });
-            function lerp(a, b, n) {
-                return (1 - n) * a + n * b;
-            }
-            function tickCursor() {
-                rx = lerp(rx, mx, 0.12);
-                ry = lerp(ry, my, 0.12);
-                ring.style.left = rx + "px";
-                ring.style.top = ry + "px";
-                requestAnimationFrame(tickCursor);
-            }
-            tickCursor();
-        }
+                    anime({
+                        targets: "#tr-header .subtitle-tech",
+                        opacity: [0, 1],
+                        translateX: [-12, 0],
+                        duration: 500,
+                        easing: "easeOutExpo",
+                    });
+                    anime({
+                        targets: "#tr-header .trayectoria-title",
+                        opacity: [0, 1],
+                        translateY: [14, 0],
+                        duration: 600,
+                        delay: 150,
+                        easing: "easeOutExpo",
+                    });
 
-        anime({
-            targets: "#scanline",
-            top: ["0%", "100%"],
-            opacity: [0, 0.9, 0],
-            duration: 1800,
-            easing: "linear",
-            delay: 100,
-            complete: () => {
-                const s = document.getElementById("scanline");
-                if (s) s.style.display = "none";
+                    anime({
+                        targets: ".section-title",
+                        opacity: [0, 1],
+                        translateY: [20, 0],
+                        duration: 700,
+                        delay: anime.stagger(200, { start: 300 }),
+                        easing: "easeOutExpo",
+                    });
+
+                    anime({
+                        targets: ".entry",
+                        opacity: [0, 1],
+                        translateY: [24, 0],
+                        duration: 700,
+                        delay: anime.stagger(120, { start: 550 }),
+                        easing: "easeOutExpo",
+                    });
+
+                    io.unobserve(entry.target);
+                });
             },
-        });
+            { threshold: 0.15 },
+        );
 
-        anime({
-            targets: ".section-title",
-            opacity: [0, 1],
-            translateY: [20, 0],
-            duration: 700,
-            delay: anime.stagger(200, { start: 300 }),
-            easing: "easeOutExpo",
-        });
-
-        anime({
-            targets: ".entry",
-            opacity: [0, 1],
-            translateY: [24, 0],
-            duration: 700,
-            delay: anime.stagger(120, { start: 550 }),
-            easing: "easeOutExpo",
-        });
+        const section = document.getElementById("trayectoria");
+        if (section) io.observe(section);
 
         document.querySelectorAll(".entry").forEach((entry) => {
             entry.addEventListener("mouseenter", () => {
@@ -188,66 +180,34 @@
 </script>
 
 <style>
-    .cursor {
-        position: fixed;
-        width: 10px;
-        height: 10px;
-        background-color: var(--primary);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 9999;
-        mix-blend-mode: screen;
-        transform: translate(-50%, -50%);
-        transition:
-            width 0.15s ease,
-            height 0.15s ease,
-            opacity 0.15s ease;
-    }
-    .cursor-ring {
-        position: fixed;
-        width: 36px;
-        height: 36px;
-        border: 1px solid rgba(0, 255, 156, 0.35);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 9998;
-        transform: translate(-50%, -50%);
-        transition:
-            width 0.3s ease,
-            height 0.3s ease;
+    .trayectoria-header {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: var(--gap-xl, 48px);
     }
 
-    .scanline {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(
-            90deg,
-            transparent,
-            var(--primary),
-            transparent
-        );
+    .subtitle-tech {
+        color: var(--primary, #00ff9c);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
         opacity: 0;
-        pointer-events: none;
-        z-index: 200;
     }
 
-    .noise {
-        position: fixed;
-        inset: 0;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-        pointer-events: none;
-        z-index: 50;
-        opacity: 0.35;
+    .trayectoria-title {
+        font-size: 38px;
+        font-weight: 800;
+        color: #ffffff;
+        margin: 0;
+        letter-spacing: -0.01em;
+        opacity: 0;
     }
 
     .hero-container {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: var(--gap-xl, 48px);
-        padding: var(--gap-xl, 48px) 64px;
     }
 
     .col {
@@ -347,10 +307,6 @@
     @media (max-width: 768px) {
         .hero-container {
             grid-template-columns: 1fr;
-        }
-        .cursor,
-        .cursor-ring {
-            display: none;
         }
     }
 </style>
