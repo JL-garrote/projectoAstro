@@ -3,6 +3,7 @@
 import teamPulseImage from '../assets/port.png';
 import voyagerImage from '../assets/voyager.jpg';
 import auraChatImage from '../assets/auraChat.jpg';
+import boardSyncImage from '../assets/boardSync.png';
 import type { ImageMetadata } from 'astro';
 
 interface Proyecto {
@@ -46,6 +47,16 @@ const proyectos: Proyecto[] = [
     linkLive: "https://retrograde-resonance-dun.vercel.app",
     image: auraChatImage,
     iconType: "shield"
+  },
+  {
+    tagTop: "v0.1.0",
+    title: "BoardSync",
+    description: "Tableros Kanban colaborativos: creá tableros, organizalos en columnas, sumá tarjetas y agregá miembros con roles (Editor/Viewer) para trabajar en equipo. Incluye reordenamiento de columnas y tarjetas, y control de concurrencia optimista para evitar que dos ediciones simultáneas se pisen entre sí.",
+    tags: ["#React", "#SpringBoot", "#Zustand", "#TailwindCSS"],
+    linkSource: "#",
+    linkLive: "https://boardsync-frontend.vercel.app/",
+    image: boardSyncImage,
+    iconType: "cpu"
   }
 ];
 ---
