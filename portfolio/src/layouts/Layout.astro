@@ -147,6 +147,16 @@ const { title = "Juan Luis Gil Garrote" } = Astro.props;
 	section {
 		padding: var(--gap-xl) var(--margin-desktop);
 		border-bottom: 1px solid var(--outline-variant);
+		width: 100%;
+		max-width: 1600px;
+		margin-inline: auto;
+	}
+
+	.site-header,
+	.site-footer {
+		width: 100%;
+		max-width: 1600px;
+		margin-inline: auto;
 	}
 
 	@media (max-width: 768px) {
