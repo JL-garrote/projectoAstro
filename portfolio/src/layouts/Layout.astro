@@ -59,6 +59,7 @@ const { title = "Juan Luis Gil Garrote" } = Astro.props;
 		--margin-desktop: 80px;
 		--gap-md: 24px;
 		--gap-xl: 48px;
+		--content-max: 1600px;
 		--font-family: "Hanken Grotesk", sans-serif;
 	}
 
@@ -146,17 +147,8 @@ const { title = "Juan Luis Gil Garrote" } = Astro.props;
 
 	section {
 		padding: var(--gap-xl) var(--margin-desktop);
+		padding-inline: max(var(--margin-desktop), calc((100% - var(--content-max)) / 2));
 		border-bottom: 1px solid var(--outline-variant);
-		width: 100%;
-		max-width: 1600px;
-		margin-inline: auto;
-	}
-
-	.site-header,
-	.site-footer {
-		width: 100%;
-		max-width: 1600px;
-		margin-inline: auto;
 	}
 
 	@media (max-width: 768px) {

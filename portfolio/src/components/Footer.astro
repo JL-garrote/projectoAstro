@@ -31,7 +31,8 @@ const opcionesFooter = [
         display: flex;
         justify-content: space-between; /* Separa el logo, el centro y el botón */
         align-items: center;
-        padding: var(--gap-md) var(--margin-desktop);
+        padding-block: var(--gap-md);
+        padding-inline: max(var(--margin-desktop), calc((100% - var(--content-max)) / 2));
         background-color: var(--surface-container-lowest); /* Fondo oscuro según tu paleta */
         border-top: 1px solid var(--outline-variant); /* Línea superior */
     }

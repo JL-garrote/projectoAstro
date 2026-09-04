@@ -32,7 +32,8 @@ const opcionesHeader = [
 		display: flex;
 		justify-content: space-between; /* Separa logo, menú y botón equitativamente */
 		align-items: center; /* Centra todo verticalmente */
-		padding: var(--gap-md) var(--margin-desktop); /* Usa tus variables de espacio */
+		padding-block: var(--gap-md);
+		padding-inline: max(var(--margin-desktop), calc((100% - var(--content-max)) / 2));
 		background-color: transparent; /* O var(--surface) si quieres fondo sólido */
 		border-bottom: 1px solid var(--outline-variant);
 	}
