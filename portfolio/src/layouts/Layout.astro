@@ -24,6 +24,10 @@ const { title = "Juan Luis Gil Garrote" } = Astro.props;
 			href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
 			rel="stylesheet"
 		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/devicon/2.16.0/devicon.min.css"
+		/>
 	</head>
 	<body class="grid-overlay">
 		<div class="cursor" id="cursor"></div>
@@ -31,7 +35,7 @@ const { title = "Juan Luis Gil Garrote" } = Astro.props;
 
 		<canvas
 			id="dot-canvas"
-			style="position:fixed;inset:0;pointer-events:none;z-index:1;"
+			style="position:fixed;inset:0;pointer-events:none;z-index:-1;"
 		></canvas>
 
 		<Welcome />
@@ -223,48 +227,97 @@ const { title = "Juan Luis Gil Garrote" } = Astro.props;
 
 	})();
 
-	/* ── CANVAS PUNTOS ANIMADOS ── */
+	/* ── CANVAS RED DE PARTÍCULAS ── */
 	(function () {
 		const canvas = document.getElementById("dot-canvas");
 		if (!canvas) return;
-		const ctx  = canvas.getContext("2d");
-		const SIZE = 40;
-		let cols, rows, dots;
+		const ctx = canvas.getContext("2d");
+
+		const LINK_DIST   = 140;
+		const DENSITY     = 1 / 18000; // partículas por px²
+		const SPEED       = 0.25;
+		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+		let width, height, particles;
+
+		function makeParticles() {
+			const count = Math.min(140, Math.round(width * height * DENSITY));
+			particles = Array.from({ length: count }, () => ({
+				x: Math.random() * width,
+				y: Math.random() * height,
+				vx: (Math.random() - 0.5) * SPEED,
+				vy: (Math.random() - 0.5) * SPEED,
+			}));
+		}
 
 		function resize() {
-			canvas.width  = window.innerWidth;
-			canvas.height = window.innerHeight;
-			cols = Math.ceil(canvas.width  / SIZE) + 1;
-			rows = Math.ceil(canvas.height / SIZE) + 1;
-			dots = Array.from({ length: cols * rows }, () => ({
-				alpha: 0, target: 0, timer: 0,
-			}));
+			width  = canvas.width  = window.innerWidth;
+			height = canvas.height = window.innerHeight;
+			makeParticles();
 		}
 		resize();
 		window.addEventListener("resize", resize);
 
-		setInterval(() => {
-			const i = Math.floor(Math.random() * dots.length);
-			dots[i].target = Math.random() > 0.5 ? 1 : 0.4;
-			dots[i].timer  = 60 + Math.random() * 200;
-		}, 80);
+		const mouse = { x: -9999, y: -9999 };
+		window.addEventListener("mousemove", (e) => {
+			mouse.x = e.clientX;
+			mouse.y = e.clientY;
+		});
+
+		function step() {
+			particles.forEach((p) => {
+				p.x += p.vx;
+				p.y += p.vy;
+				if (p.x < 0 || p.x > width)  p.vx *= -1;
+				if (p.y < 0 || p.y > height) p.vy *= -1;
+			});
+		}
 
 		function draw() {
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			dots.forEach((d, i) => {
-				d.alpha += (d.target - d.alpha) * 0.05;
-				if (d.timer-- <= 0) d.target = 0;
-				const x = (i % cols) * SIZE;
-				const y = Math.floor(i / cols) * SIZE;
+			ctx.clearRect(0, 0, width, height);
+
+			for (let i = 0; i < particles.length; i++) {
+				const a = particles[i];
+
+				const dxm = a.x - mouse.x;
+				const dym = a.y - mouse.y;
+				const distMouse = Math.hypot(dxm, dym);
+				if (distMouse < LINK_DIST) {
+					ctx.beginPath();
+					ctx.moveTo(a.x, a.y);
+					ctx.lineTo(mouse.x, mouse.y);
+					ctx.strokeStyle = `rgba(0,255,156,${(1 - distMouse / LINK_DIST) * 0.5})`;
+					ctx.lineWidth = 1;
+					ctx.stroke();
+				}
+
+				for (let j = i + 1; j < particles.length; j++) {
+					const b = particles[j];
+					const dx = a.x - b.x;
+					const dy = a.y - b.y;
+					const dist = Math.hypot(dx, dy);
+					if (dist < LINK_DIST) {
+						ctx.beginPath();
+						ctx.moveTo(a.x, a.y);
+						ctx.lineTo(b.x, b.y);
+						ctx.strokeStyle = `rgba(0,255,156,${(1 - dist / LINK_DIST) * 0.22})`;
+						ctx.lineWidth = 1;
+						ctx.stroke();
+					}
+				}
+
 				ctx.beginPath();
-				ctx.arc(x, y, 1, 0, Math.PI * 2);
-				ctx.fillStyle = d.alpha > 0.15
-					? `rgba(0,255,156,${d.alpha})`
-					: `rgba(56,61,57,${0.4 + d.alpha})`;
+				ctx.arc(a.x, a.y, 1.6, 0, Math.PI * 2);
+				ctx.fillStyle = "rgba(0,255,156,0.7)";
 				ctx.fill();
-			});
-			requestAnimationFrame(draw);
+			}
 		}
-		draw();
+
+		function loop() {
+			if (!reduceMotion) step();
+			draw();
+			requestAnimationFrame(loop);
+		}
+		loop();
 	})();
 </script>

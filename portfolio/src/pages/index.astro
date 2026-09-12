@@ -103,7 +103,13 @@ const imagenEntorno = "/assets/entorno.jpg";
                     <span class="card-number text-code-md">01</span>
                 </div>
                 <h4>Frontend</h4>
-                <p>React, Next.js, Tailwind CSS, TypeScript, Astro</p>
+                <div class="tech-items">
+                    <span class="tech-item"><i class="devicon-react-plain"></i>React</span>
+                    <span class="tech-item"><i class="devicon-nextjs-plain"></i>Next.js</span>
+                    <span class="tech-item"><i class="devicon-tailwindcss-plain"></i>Tailwind CSS</span>
+                    <span class="tech-item"><i class="devicon-typescript-plain"></i>TypeScript</span>
+                    <span class="tech-item"><i class="devicon-astro-plain"></i>Astro</span>
+                </div>
                 <div class="stat-bar"><div class="stat-fill" id="bar1" data-width="80"></div></div>
             </div>
 
@@ -113,7 +119,15 @@ const imagenEntorno = "/assets/entorno.jpg";
                     <span class="card-number text-code-md">02</span>
                 </div>
                 <h4>Backend</h4>
-                <p>Node.js, Python, C#, Java, Spring Boot, MySQL, PostgreSQL</p>
+                <div class="tech-items">
+                    <span class="tech-item"><i class="devicon-nodejs-plain"></i>Node.js</span>
+                    <span class="tech-item"><i class="devicon-python-plain"></i>Python</span>
+                    <span class="tech-item"><i class="devicon-csharp-plain"></i>C#</span>
+                    <span class="tech-item"><i class="devicon-java-plain"></i>Java</span>
+                    <span class="tech-item"><i class="devicon-spring-plain"></i>Spring Boot</span>
+                    <span class="tech-item"><i class="devicon-mysql-plain"></i>MySQL</span>
+                    <span class="tech-item"><i class="devicon-postgresql-plain"></i>PostgreSQL</span>
+                </div>
                 <div class="stat-bar"><div class="stat-fill" id="bar2" data-width="95"></div></div>
             </div>
 
@@ -123,7 +137,20 @@ const imagenEntorno = "/assets/entorno.jpg";
                     <span class="card-number text-code-md">03</span>
                 </div>
                 <h4>Arquitectura</h4>
-                <p>Microservices, REST API, MVC</p>
+                <div class="tech-items">
+                    <span class="tech-item">
+                        <svg class="tech-item-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                        Microservices
+                    </span>
+                    <span class="tech-item">
+                        <svg class="tech-item-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                        REST API
+                    </span>
+                    <span class="tech-item">
+                        <svg class="tech-item-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                        MVC
+                    </span>
+                </div>
                 <div class="stat-bar"><div class="stat-fill" id="bar3" data-width="88"></div></div>
             </div>
 
@@ -577,7 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
         position: relative;
         border: 1px solid var(--outline-variant);
         padding: 24px;
-        background-color: rgba(18, 20, 20, 0.5);
+        background-color: var(--surface);
         width: 100%;
         max-width: 440px;
     }
@@ -739,7 +766,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     .tech-card {
         border: 1px solid var(--outline-variant);
-        background-color: rgba(26, 28, 28, 0.2);
+        background-color: var(--surface-container-low);
         padding: var(--gap-md);
         display: flex;
         flex-direction: column;
@@ -769,7 +796,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     .tech-card:hover {
         border-color: rgba(0, 255, 156, 0.3);
-        background-color: rgba(26, 28, 28, 0.5);
+        background-color: #202323;
     }
 
     .card-header {
@@ -795,11 +822,43 @@ document.addEventListener('DOMContentLoaded', () => {
         margin: 0;
     }
 
-    .tech-card p {
+    .tech-items {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        gap: 8px;
+        flex: 1;
+    }
+
+    .tech-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid var(--outline-variant);
+        background-color: var(--surface-container-lowest);
         color: var(--on-surface-variant);
-        font-size: 14px;
-        line-height: 1.5;
-        margin: 0;
+        padding: 5px 10px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        line-height: 1;
+        transition: border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .tech-card:hover .tech-item {
+        border-color: rgba(0, 255, 156, 0.25);
+    }
+
+    .tech-item i {
+        font-size: 15px;
+        line-height: 1;
+        color: currentColor;
+    }
+
+    .tech-item-icon {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+        color: currentColor;
     }
 
     /* Barra de habilidad */
