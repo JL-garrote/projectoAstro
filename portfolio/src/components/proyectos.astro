@@ -3,6 +3,7 @@
 import voyagerImage from '../assets/voyager.jpg';
 import auraChatImage from '../assets/auraChat.jpg';
 import boardSyncImage from '../assets/boardSync.png';
+import pass from '../assets/pass.png';
 import type { ImageMetadata } from 'astro';
 
 interface Proyecto {
@@ -60,7 +61,7 @@ const proyectos: Proyecto[] = [
     ]
   },
   {
-    tagTop: "v0.1.0",
+    tagTop: "v1.0.0",
     title: "BoardSync",
     description: "Tableros Kanban colaborativos: creá tableros, organizalos en columnas, sumá tarjetas y agregá miembros con roles (Editor/Viewer) para trabajar en equipo. Incluye reordenamiento de columnas y tarjetas, y control de concurrencia optimista para evitar que dos ediciones simultáneas se pisen entre sí.",
     tags: ["#React", "#SpringBoot", "#Zustand", "#TailwindCSS"],
@@ -69,13 +70,33 @@ const proyectos: Proyecto[] = [
     image: boardSyncImage,
     iconType: "cpu",
     role: "Full Stack · En solitario",
-    duration: "En desarrollo actualmente",
+    duration: "1 mes",
     challenge: "Sincronizar la conectividad entre usuarios en tiempo real, refrescando los tableros compartidos sin interrumpir a los usuarios que están trabajando en ese momento.",
     features: [
       "Tableros Kanban organizados en columnas",
       "Miembros con roles (Editor/Viewer)",
       "Reordenamiento de columnas y tarjetas",
       "Control de concurrencia optimista"
+    ]
+  },
+  {
+    tagTop: "v1.0.0",
+    title: "Password Guard",
+    description: "Generador y analizador de contraseñas. Calcula la entropía y el tiempo estimado para descifrarlas, detecta si están entre las 10.000 más usadas, comprueba si aparecen en filtraciones reales con Have I Been Pwned y ofrece consejos personalizados con IA (Gemini) sin enviarle nunca la contraseña.",
+    tags: ["#ASP.NETCore", "#.NET", "#Vue.js", "#GeminiAPI"],
+    linkSource: "https://github.com/JL-garrote/passwordGuard",
+    linkLive: "#",
+    image: pass,
+    iconType: "shield",
+    role: "Full Stack · En solitario",
+    duration: "En desarrollo actualmente",
+    challenge: "Analizar contraseñas con servicios externos sin exponerlas: k-anonymity con el hash SHA-1 para Have I Been Pwned y una estructura anónima (tipos y longitudes) como única información que recibe la IA.",
+    features: [
+      "Generador con longitud de 8 a 128 caracteres y filtros por tipo de carácter",
+      "Cálculo de entropía y tiempo estimado para descifrar la contraseña",
+      "Detección de las 10.000 contraseñas más usadas",
+      "Comprobación de filtraciones con Have I Been Pwned (k-anonymity)",
+      "Consejos personalizados con IA a partir de una estructura anónima"
     ]
   }
 ];
