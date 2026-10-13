@@ -1,0 +1,119 @@
+---
+import { Image } from "astro:assets";
+import foto from "../../../assets/foto.png";
+import { perfil } from "../../../data/portfolio";
+---
+
+<div class="about">
+	<div class="about-hero">
+		<div class="about-photo reveal" style="--i:0">
+			<Image src={foto} alt={perfil.nombre} width={480} loading="eager" />
+			<span class="photo-tag mono">v2.4.0_STABLE</span>
+		</div>
+		<div class="about-intro">
+			<span class="status-pill mono reveal" style="--i:1"><span class="pulse-dot"></span>{perfil.estado}</span>
+			<h1 class="about-title reveal" style="--i:2">Desarrollador <span class="accent">FULLSTACK</span></h1>
+			<p class="about-name mono reveal" style="--i:3">{perfil.nombre} · {perfil.ubicacion}</p>
+			<p class="about-lead reveal" style="--i:4">{perfil.resumen}</p>
+			<div class="about-actions reveal" style="--i:5">
+				<button type="button" class="btn btn-primary" data-open="proyectos">Mis proyectos <span aria-hidden="true">→</span></button>
+				<button type="button" class="btn btn-ghost" data-open="contacto">Contacto</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="about-body reveal" style="--i:6">
+		<p class="section-label mono">// cat sobre_mi.txt</p>
+		<p>{perfil.sobreMi}</p>
+		<ul class="arrow-list">
+			{perfil.destacados.map((d) => <li>{d}</li>)}
+		</ul>
+	</div>
+</div>
+
+<style>
+	.about {
+		padding: 28px;
+	}
+	.about-hero {
+		display: grid;
+		grid-template-columns: minmax(0, 220px) 1fr;
+		gap: 28px;
+		align-items: center;
+	}
+	.about-photo {
+		position: relative;
+		border: 1px solid var(--line);
+		padding: 6px;
+		background: var(--bg-deep);
+	}
+	.about-photo img {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 1;
+		object-fit: cover;
+		filter: grayscale(0.35) contrast(1.05);
+		transition:
+			filter 0.5s ease,
+			transform 0.6s var(--ease-out);
+	}
+	.about-photo {
+		overflow: hidden;
+	}
+	.about-photo:hover img {
+		filter: grayscale(0) contrast(1.05);
+		transform: scale(1.03);
+	}
+	.photo-tag {
+		z-index: 1;
+	}
+	.photo-tag {
+		position: absolute;
+		right: -1px;
+		bottom: 0;
+		font-size: 10px;
+		padding: 2px 6px;
+		background: var(--accent);
+		color: var(--on-accent);
+	}
+	.about-title {
+		font-size: clamp(28px, 6cqi, 48px);
+		line-height: 1.05;
+		margin: 14px 0 6px;
+		font-weight: 800;
+		letter-spacing: -0.02em;
+	}
+	.about-name {
+		color: var(--muted);
+		font-size: 13px;
+		margin: 0 0 14px;
+	}
+	.about-lead {
+		color: var(--text-soft);
+		margin: 0 0 20px;
+	}
+	.about-actions {
+		display: flex;
+		gap: 12px;
+		flex-wrap: wrap;
+	}
+	.about-body {
+		margin-top: 32px;
+		padding-top: 24px;
+		border-top: 1px dashed var(--line);
+		color: var(--text-soft);
+	}
+	.about-body p:not(.section-label) {
+		margin: 0 0 16px;
+	}
+
+	@container (max-width: 560px) {
+		.about-hero {
+			grid-template-columns: 1fr;
+		}
+		.about-photo {
+			max-width: 180px;
+		}
+	}
+</style>

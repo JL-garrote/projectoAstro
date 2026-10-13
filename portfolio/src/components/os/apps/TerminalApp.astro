@@ -1,0 +1,97 @@
+---
+import { perfil, redes, stack, experiencia, educacion, proyectos, apps } from "../../../data/portfolio";
+
+// Datos serializados para la terminal (sin imágenes)
+const datos = {
+	perfil,
+	redes,
+	stack: stack.map((g) => ({ titulo: g.titulo, nivel: g.nivel, items: g.items.map((i) => i.nombre) })),
+	experiencia,
+	educacion,
+	proyectos: proyectos.map(({ image, ...p }) => p),
+	apps: apps.map((a) => ({ id: a.id, nombre: a.nombre })),
+};
+---
+
+<div class="term" id="term">
+	<div class="term-out" id="term-out" aria-live="polite"></div>
+	<form class="term-line" id="term-form" autocomplete="off">
+		<label for="term-input" class="prompt mono"><span class="p-user">{perfil.usuario}@portfolio</span>:<span class="p-path">~</span>$</label>
+		<input id="term-input" class="term-input mono" type="text" spellcheck="false" autocapitalize="off" aria-label="Comando" />
+	</form>
+</div>
+
+<script is:inline type="application/json" id="term-data" set:html={JSON.stringify(datos).replace(/</g, "\\u003c")} />
+
+<script>
+	import { createTerminal } from "../../../scripts/terminal";
+	createTerminal();
+</script>
+
+<style>
+	.term {
+		min-height: 100%;
+		padding: 14px 16px 20px;
+		background: var(--bg-deep);
+		font-family: var(--font-mono);
+		font-size: 13.5px;
+		line-height: 1.55;
+		cursor: text;
+	}
+	.term-out :global(.line) {
+		animation: term-line 0.2s ease-out both;
+		white-space: pre-wrap;
+		word-break: break-word;
+		margin: 0;
+	}
+	.term-out :global(.cmd) {
+		color: var(--text);
+	}
+	.term-out :global(.ok) {
+		color: var(--accent);
+	}
+	.term-out :global(.dim) {
+		color: var(--muted);
+	}
+	.term-out :global(.err) {
+		color: var(--danger);
+	}
+	.term-out :global(a) {
+		color: var(--accent);
+	}
+	@keyframes term-line {
+		from {
+			opacity: 0;
+			transform: translateY(3px);
+		}
+	}
+	.term-line {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+	}
+	.prompt,
+	.term-out :global(.prompt) {
+		white-space: nowrap;
+		color: var(--text-soft);
+	}
+	.p-user,
+	.term-out :global(.p-user) {
+		color: var(--accent);
+	}
+	.p-path,
+	.term-out :global(.p-path) {
+		color: #6cb6ff;
+	}
+	.term-input {
+		flex: 1;
+		min-width: 0;
+		background: transparent;
+		border: 0;
+		outline: none;
+		color: var(--text);
+		font: inherit;
+		caret-color: var(--accent);
+		padding: 0;
+	}
+</style>

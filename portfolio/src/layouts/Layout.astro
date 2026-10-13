@@ -1,12 +1,15 @@
 ---
-import Welcome from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
+import "../styles/os.css";
 
 interface Props {
 	title?: string;
+	description?: string;
 }
 
-const { title = "Juan Luis Gil Garrote" } = Astro.props;
+const {
+	title = "Juan Luis Gil Garrote — JL-OS",
+	description = "Portfolio de Juan Luis Gil Garrote, desarrollador Full Stack enfocado en backend, presentado como un sistema operativo.",
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -14,6 +17,8 @@ const { title = "Juan Luis Gil Garrote" } = Astro.props;
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content={description} />
+		<meta name="theme-color" content="#0d0e0f" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
@@ -21,303 +26,24 @@ const { title = "Juan Luis Gil Garrote" } = Astro.props;
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700;800&display=swap"
 			rel="stylesheet"
 		/>
-		<link
-			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/devicon/2.16.0/devicon.min.css"
-		/>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/devicon/2.16.0/devicon.min.css" />
+
+		<!-- Sin JavaScript: el contenido se muestra como un documento normal -->
+		<noscript>
+			<style>
+				body { overflow: auto; }
+				.os { height: auto; display: block; }
+				.boot, .dock, .desktop-icons, .start-btn, .window-controls { display: none !important; }
+				.desktop { overflow: visible; }
+				.window, .window[hidden] { display: flex; position: static; resize: none; margin: 24px auto; max-width: 960px; }
+				.wallpaper-mark { position: static; text-align: left; padding: 24px; }
+			</style>
+		</noscript>
 	</head>
-	<body class="grid-overlay">
-		<div class="cursor" id="cursor"></div>
-		<div class="cursor-ring" id="cursor-ring"></div>
-
-		<canvas
-			id="dot-canvas"
-			style="position:fixed;inset:0;pointer-events:none;z-index:-1;"
-		></canvas>
-
-		<Welcome />
-
-		<main class="site-main">
-			<slot />
-		</main>
-
-		<Footer />
+	<body>
+		<slot />
 	</body>
 </html>
-
-<style is:global>
-	:root {
-		--surface: #121414;
-		--surface-bright: #383939;
-		--surface-container-low: #1a1c1c;
-		--surface-container-lowest: #0d0e0f;
-		--primary: #00ff9c;
-		--primary-fixed-dim: #00e089;
-		--on-primary: #003820;
-		--on-surface: #e1e3e2;
-		--on-surface-variant: #c0c9c4;
-		--outline-variant: #404945;
-		--margin-desktop: 80px;
-		--gap-md: 24px;
-		--gap-xl: 48px;
-		--content-max: 1600px;
-		--font-family: "Hanken Grotesk", sans-serif;
-	}
-
-	*,
-	*::before,
-	*::after {
-		box-sizing: border-box;
-		cursor: none !important;
-	}
-
-	body {
-		background-color: var(--surface);
-		color: var(--on-surface);
-		font-family: var(--font-family);
-		margin: 0;
-		-webkit-font-smoothing: antialiased;
-		min-height: 100vh;
-		display: flex;
-		flex-direction: column;
-	}
-
-	main,
-	.site-main {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.grid-overlay {
-		background-image: radial-gradient(var(--surface-bright) 1px, transparent 1px);
-		background-color: var(--surface);
-		animation: zoomDots 6s ease-in-out infinite;
-	}
-
-	.cursor {
-		position: fixed;
-		width: 10px;
-		height: 10px;
-		background-color: var(--primary);
-		border-radius: 50%;
-		pointer-events: none;
-		z-index: 9999;
-		mix-blend-mode: screen;
-		transform: translate(-50%, -50%);
-		opacity: 0;
-		transition: width 0.15s ease, height 0.15s ease, opacity 0.15s ease;
-	}
-
-	.cursor-ring {
-		position: fixed;
-		width: 36px;
-		height: 36px;
-		border: 1px solid rgba(0, 255, 156, 0.35);
-		border-radius: 50%;
-		pointer-events: none;
-		z-index: 9998;
-		transform: translate(-50%, -50%);
-		opacity: 0;
-		transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
-	}
-
-	.text-code-md {
-		font-family: "JetBrains Mono", "Fira Code", monospace;
-		font-size: 14px;
-		letter-spacing: -0.02em;
-	}
-
-	.btn-primary {
-		display: inline-block;
-		background-color: var(--primary);
-		color: var(--on-primary);
-		padding: 12px 24px;
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		text-decoration: none;
-		border: none;
-		transition: all 0.2s ease;
-	}
-
-	.btn-primary:hover {
-		filter: brightness(1.1);
-		box-shadow: 0 0 20px rgba(0, 255, 156, 0.3);
-	}
-
-	section {
-		padding: var(--gap-xl) var(--margin-desktop);
-		padding-inline: max(var(--margin-desktop), calc((100% - var(--content-max)) / 2));
-		border-bottom: 1px solid var(--outline-variant);
-	}
-
-	@media (max-width: 768px) {
-		.cursor,
-		.cursor-ring {
-			display: none;
-		}
-		*,
-		*::before,
-		*::after {
-			cursor: auto !important;
-		}
-		section {
-			padding: var(--gap-md) 20px;
-		}
-	}
-</style>
-
-<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-
-<script is:inline>
-	(function () {
-		const cursor = document.getElementById("cursor");
-		const ring   = document.getElementById("cursor-ring");
-		if (!cursor || !ring) return;
-
-		let mx = 0, my = 0, rx = 0, ry = 0;
-
-		document.addEventListener("mousemove", (e) => {
-			mx = e.clientX;
-			my = e.clientY;
-			cursor.style.left    = mx + "px";
-			cursor.style.top     = my + "px";
-			cursor.style.opacity = "1";
-			ring.style.opacity   = "1";
-		});
-
-		function lerp(a, b, n) { return (1 - n) * a + n * b; }
-
-		function tickCursor() {
-			rx = lerp(rx, mx, 0.12);
-			ry = lerp(ry, my, 0.12);
-			ring.style.left = rx + "px";
-			ring.style.top  = ry + "px";
-			requestAnimationFrame(tickCursor);
-		}
-		tickCursor();
-
-		function bindHover() {
-			document.querySelectorAll("a, button, input, textarea, .tech-card").forEach((el) => {
-				el.addEventListener("mouseenter", () => {
-					cursor.style.width   = "20px";
-					cursor.style.height  = "20px";
-					cursor.style.opacity = "0.6";
-					ring.style.width     = "56px";
-					ring.style.height    = "56px";
-					ring.style.opacity   = "1";
-				});
-				el.addEventListener("mouseleave", () => {
-					cursor.style.width   = "10px";
-					cursor.style.height  = "10px";
-					cursor.style.opacity = "1";
-					ring.style.width     = "36px";
-					ring.style.height    = "36px";
-					ring.style.opacity   = "1";
-				});
-			});
-		}
-
-		bindHover();
-		document.addEventListener("astro:page-load", bindHover);
-
-	})();
-
-	/* ── CANVAS RED DE PARTÍCULAS ── */
-	(function () {
-		const canvas = document.getElementById("dot-canvas");
-		if (!canvas) return;
-		const ctx = canvas.getContext("2d");
-
-		const LINK_DIST   = 140;
-		const DENSITY     = 1 / 18000; // partículas por px²
-		const SPEED       = 0.25;
-		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-		let width, height, particles;
-
-		function makeParticles() {
-			const count = Math.min(140, Math.round(width * height * DENSITY));
-			particles = Array.from({ length: count }, () => ({
-				x: Math.random() * width,
-				y: Math.random() * height,
-				vx: (Math.random() - 0.5) * SPEED,
-				vy: (Math.random() - 0.5) * SPEED,
-			}));
-		}
-
-		function resize() {
-			width  = canvas.width  = window.innerWidth;
-			height = canvas.height = window.innerHeight;
-			makeParticles();
-		}
-		resize();
-		window.addEventListener("resize", resize);
-
-		const mouse = { x: -9999, y: -9999 };
-		window.addEventListener("mousemove", (e) => {
-			mouse.x = e.clientX;
-			mouse.y = e.clientY;
-		});
-
-		function step() {
-			particles.forEach((p) => {
-				p.x += p.vx;
-				p.y += p.vy;
-				if (p.x < 0 || p.x > width)  p.vx *= -1;
-				if (p.y < 0 || p.y > height) p.vy *= -1;
-			});
-		}
-
-		function draw() {
-			ctx.clearRect(0, 0, width, height);
-
-			for (let i = 0; i < particles.length; i++) {
-				const a = particles[i];
-
-				const dxm = a.x - mouse.x;
-				const dym = a.y - mouse.y;
-				const distMouse = Math.hypot(dxm, dym);
-				if (distMouse < LINK_DIST) {
-					ctx.beginPath();
-					ctx.moveTo(a.x, a.y);
-					ctx.lineTo(mouse.x, mouse.y);
-					ctx.strokeStyle = `rgba(0,255,156,${(1 - distMouse / LINK_DIST) * 0.5})`;
-					ctx.lineWidth = 1;
-					ctx.stroke();
-				}
-
-				for (let j = i + 1; j < particles.length; j++) {
-					const b = particles[j];
-					const dx = a.x - b.x;
-					const dy = a.y - b.y;
-					const dist = Math.hypot(dx, dy);
-					if (dist < LINK_DIST) {
-						ctx.beginPath();
-						ctx.moveTo(a.x, a.y);
-						ctx.lineTo(b.x, b.y);
-						ctx.strokeStyle = `rgba(0,255,156,${(1 - dist / LINK_DIST) * 0.22})`;
-						ctx.lineWidth = 1;
-						ctx.stroke();
-					}
-				}
-
-				ctx.beginPath();
-				ctx.arc(a.x, a.y, 1.6, 0, Math.PI * 2);
-				ctx.fillStyle = "rgba(0,255,156,0.7)";
-				ctx.fill();
-			}
-		}
-
-		function loop() {
-			if (!reduceMotion) step();
-			draw();
-			requestAnimationFrame(loop);
-		}
-		loop();
-	})();
-</script>
