@@ -8,14 +8,14 @@ const columnas = [
 ---
 
 <div class="logs">
-	{columnas.map((col) => (
+	{columnas.map((col, ci) => (
 		<section class="log-col">
-			<h2 class="log-title">
+			<h2 class="log-title reveal" style={`--i:${ci}`}>
 				<span class="mono muted">$ tail</span> {col.archivo}
 			</h2>
 			<ol class="timeline">
-				{col.entradas.map((e) => (
-					<li class="entry">
+				{col.entradas.map((e, i) => (
+					<li class="entry reveal" style={`--i:${ci + 1 + i * 1.5}`}>
 						<span class="entry-date mono">[{e.fecha}]</span>
 						<h3 class="entry-role">{e.titulo}</h3>
 						<p class="entry-place mono">@ {e.lugar}</p>
@@ -59,6 +59,9 @@ const columnas = [
 		padding-bottom: 0;
 	}
 	.entry::before {
+		transition:
+			box-shadow 0.3s ease,
+			background 0.3s ease;
 		content: "";
 		position: absolute;
 		left: -5px;
@@ -67,6 +70,16 @@ const columnas = [
 		height: 9px;
 		background: var(--bg);
 		border: 1px solid var(--accent);
+	}
+	.entry:hover::before {
+		background: var(--accent);
+		box-shadow: 0 0 12px var(--accent);
+	}
+	.entry-role {
+		transition: color 0.2s ease;
+	}
+	.entry:hover .entry-role {
+		color: var(--accent);
 	}
 	.entry:first-child::before {
 		background: var(--accent);

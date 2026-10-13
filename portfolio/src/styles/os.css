@@ -15,6 +15,8 @@
 	--danger: #ff5f6d;
 	--warn: #ffcc4d;
 	--topbar-h: 34px;
+	--ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+	--ease-spring: cubic-bezier(0.3, 1.4, 0.5, 1);
 	--font-sans: "Hanken Grotesk", system-ui, sans-serif;
 	--font-mono: "JetBrains Mono", ui-monospace, monospace;
 	color-scheme: dark;
@@ -96,7 +98,20 @@ button {
 	font-size: 14px;
 	font-weight: 600;
 	text-decoration: none;
-	transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+	transition:
+		background 0.2s ease,
+		color 0.2s ease,
+		box-shadow 0.25s ease,
+		transform 0.2s var(--ease-out);
+}
+
+.btn:hover {
+	transform: translateY(-1px);
+}
+
+.btn:active {
+	transform: translateY(0) scale(0.97);
+	transition-duration: 0.08s;
 }
 
 .btn-primary {
@@ -229,6 +244,32 @@ button {
 	color: var(--text);
 }
 
+.active-app.is-swapping {
+	animation: label-swap 0.3s var(--ease-out);
+}
+
+@keyframes label-swap {
+	from {
+		opacity: 0;
+		transform: translateY(5px);
+	}
+}
+
+.start-btn {
+	transition:
+		background 0.2s ease,
+		border-color 0.2s ease;
+}
+
+.start-btn .logo-mark {
+	transition: transform 0.4s var(--ease-spring);
+}
+
+.start-btn:hover .logo-mark,
+.start-btn[aria-expanded="true"] .logo-mark {
+	transform: rotate(135deg);
+}
+
 .topbar-right {
 	margin-left: auto;
 	display: flex;
@@ -252,7 +293,7 @@ button {
 	background: var(--panel);
 	border: 1px solid var(--line);
 	box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-	animation: menu-in 0.14s ease-out;
+	animation: menu-in 0.2s var(--ease-out);
 }
 
 .start-menu p {
@@ -292,10 +333,36 @@ button {
 	background: var(--line);
 }
 
+.start-menu {
+	transform-origin: top left;
+}
+
+.start-menu.is-closing {
+	animation: menu-out 0.14s ease-in forwards;
+}
+
+.start-menu .menu-item {
+	transition:
+		background 0.15s ease,
+		color 0.15s ease,
+		padding-left 0.2s var(--ease-out);
+}
+
+.start-menu .menu-item:hover {
+	padding-left: 14px;
+}
+
 @keyframes menu-in {
 	from {
 		opacity: 0;
-		transform: translateY(-4px);
+		transform: translateY(-6px) scale(0.97);
+	}
+}
+
+@keyframes menu-out {
+	to {
+		opacity: 0;
+		transform: translateY(-6px) scale(0.97);
 	}
 }
 
@@ -304,6 +371,28 @@ button {
 	position: relative;
 	overflow: hidden;
 	outline: none;
+}
+
+/* Brillo de fondo que se desplaza lentamente */
+.desktop::before {
+	content: "";
+	position: absolute;
+	inset: -30%;
+	background:
+		radial-gradient(circle at 30% 40%, rgba(0, 255, 156, 0.07), transparent 35%),
+		radial-gradient(circle at 70% 65%, rgba(0, 160, 255, 0.05), transparent 30%);
+	animation: glow-drift 28s ease-in-out infinite alternate;
+	pointer-events: none;
+}
+
+@keyframes glow-drift {
+	to {
+		transform: translate(8%, -6%) rotate(8deg);
+	}
+}
+
+.desktop-icons {
+	position: relative;
 }
 
 .desktop-icons {
@@ -316,6 +405,56 @@ button {
 	align-content: flex-start;
 	gap: 10px;
 	height: calc(100% - 90px);
+}
+
+/* Iconos arrastrables (solo escritorio; el JS añade .is-free) */
+.desktop-icons.is-free {
+	position: absolute;
+	inset: 0;
+	padding: 0;
+	display: block;
+	height: auto;
+	pointer-events: none;
+}
+
+.desktop-icons.is-free li {
+	position: absolute;
+	pointer-events: auto;
+	transition:
+		left 0.35s var(--ease-spring),
+		top 0.35s var(--ease-spring);
+}
+
+.desktop-icons.is-free li.is-dragging {
+	z-index: 5;
+	transition: none;
+}
+
+.desktop-icons li.is-dragging .desk-icon {
+	cursor: grabbing;
+	color: var(--text);
+}
+
+.desktop-icons li.is-dragging .desk-icon-box {
+	transform: scale(1.08) rotate(-2deg);
+	border-color: var(--accent);
+	box-shadow:
+		0 14px 30px rgba(0, 0, 0, 0.5),
+		0 0 20px rgba(0, 255, 156, 0.25);
+}
+
+/* Hueco donde caerá el icono al soltarlo */
+.icon-ghost {
+	position: absolute;
+	width: 92px;
+	height: 86px;
+	border: 1px dashed var(--accent-line);
+	background: var(--accent-soft);
+	pointer-events: none;
+	transition:
+		left 0.18s var(--ease-out),
+		top 0.18s var(--ease-out);
+	animation: fade-in 0.2s ease;
 }
 
 .desk-icon {
@@ -341,7 +480,11 @@ button {
 	border: 1px solid var(--line);
 	background: rgba(23, 25, 25, 0.85);
 	color: var(--accent);
-	transition: border-color 0.15s, box-shadow 0.15s;
+	transition:
+		border-color 0.2s ease,
+		box-shadow 0.25s ease,
+		transform 0.25s var(--ease-spring),
+		background 0.2s ease;
 }
 
 .desk-icon:hover {
@@ -349,7 +492,19 @@ button {
 	background: var(--hover);
 }
 
+.desk-icon {
+	transition:
+		color 0.2s ease,
+		background 0.2s ease;
+}
+
+.desk-icon:active .desk-icon-box {
+	transform: scale(0.92);
+	transition-duration: 0.08s;
+}
+
 .desk-icon:hover .desk-icon-box {
+	transform: translateY(-3px);
 	border-color: var(--accent-line);
 	box-shadow: 0 0 16px rgba(0, 255, 156, 0.15);
 }
@@ -410,7 +565,27 @@ button {
 	background: none;
 	border: 1px solid transparent;
 	color: var(--text-soft);
-	transition: transform 0.15s, color 0.15s, background 0.15s;
+	transition:
+		transform 0.25s var(--ease-spring),
+		color 0.2s ease,
+		background 0.2s ease,
+		border-color 0.2s ease;
+}
+
+.dock-btn.is-bouncing {
+	animation: dock-bounce 0.6s var(--ease-out);
+}
+
+@keyframes dock-bounce {
+	30% {
+		transform: translateY(-12px);
+	}
+	55% {
+		transform: translateY(0);
+	}
+	75% {
+		transform: translateY(-4px);
+	}
 }
 
 .dock-btn:hover {
@@ -434,10 +609,21 @@ button {
 	border-radius: 50%;
 	background: var(--accent);
 	opacity: 0;
+	transform: scaleX(0.4);
+	transition:
+		opacity 0.25s ease,
+		width 0.3s var(--ease-out),
+		border-radius 0.3s ease;
 }
 
 .dock-btn.is-running::after {
 	opacity: 1;
+	transform: none;
+}
+
+.dock-btn.is-active::after {
+	width: 14px;
+	border-radius: 2px;
 }
 
 .dock-tip {
@@ -454,12 +640,16 @@ button {
 	color: var(--text);
 	opacity: 0;
 	pointer-events: none;
-	transition: opacity 0.12s;
+	translate: 0 4px;
+	transition:
+		opacity 0.18s ease,
+		translate 0.22s var(--ease-out);
 }
 
 .dock-btn:hover .dock-tip,
 .dock-btn:focus-visible .dock-tip {
 	opacity: 1;
+	translate: 0 0;
 }
 
 /* ── Ventanas ──────────────────────────────────────────────── */
@@ -476,6 +666,9 @@ button {
 	resize: both;
 	overflow: hidden;
 	outline: none;
+	transition:
+		border-color 0.25s ease,
+		box-shadow 0.25s ease;
 }
 
 .window[hidden] {
@@ -494,6 +687,8 @@ button {
 	inset: 0 0 80px 0 !important;
 	width: auto !important;
 	height: auto !important;
+	max-width: none !important;
+	max-height: none !important;
 	resize: none;
 	border-width: 0;
 }
@@ -554,6 +749,7 @@ button {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	transition: color 0.25s ease;
 }
 
 .window.is-active .window-title {
@@ -579,6 +775,12 @@ button {
 	border: 0;
 	color: var(--muted);
 	cursor: pointer;
+}
+
+.window-controls button {
+	transition:
+		background 0.15s ease,
+		color 0.15s ease;
 }
 
 .window-controls button:hover {
@@ -609,6 +811,58 @@ button {
 	container-type: inline-size;
 }
 
+/* ── Entradas escalonadas ──────────────────────────────────── */
+
+.os.is-ready .topbar {
+	animation: slide-down 0.5s var(--ease-out) both;
+}
+
+.os.is-ready .desktop-icons li {
+	animation: rise-in 0.5s var(--ease-out) both;
+	animation-delay: calc(120ms + var(--i, 0) * 60ms);
+}
+
+.os.is-ready .wallpaper-mark {
+	animation: fade-in 1.2s ease both 0.3s;
+}
+
+.os.is-ready .dock {
+	animation: dock-in 0.6s var(--ease-out) both 0.35s;
+}
+
+/* Contenido de una app recién abierta (clase .reveal + --i) */
+.window.is-revealing .reveal {
+	animation: rise-in 0.5s var(--ease-out) both;
+	animation-delay: calc(90ms + var(--i, 0) * 60ms);
+}
+
+@keyframes slide-down {
+	from {
+		opacity: 0;
+		transform: translateY(-100%);
+	}
+}
+
+@keyframes rise-in {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+}
+
+@keyframes dock-in {
+	from {
+		opacity: 0;
+		transform: translate(-50%, 30px);
+	}
+}
+
 /* ── Pantalla de arranque ──────────────────────────────────── */
 
 .boot {
@@ -632,6 +886,27 @@ button {
 
 .boot.is-done {
 	opacity: 0;
+	transform: scale(1.03);
+	filter: blur(4px);
+}
+
+.boot {
+	transition:
+		opacity 0.5s ease,
+		transform 0.5s ease,
+		filter 0.5s ease;
+}
+
+.boot-line {
+	display: block;
+	animation: boot-line 0.3s var(--ease-out) both;
+}
+
+@keyframes boot-line {
+	from {
+		opacity: 0;
+		transform: translateX(-8px);
+	}
 }
 
 .boot-log {
@@ -661,6 +936,10 @@ button {
 /* ── Móvil: pantalla de inicio tipo teléfono ───────────────── */
 
 @media (max-width: 768px) {
+	.desktop-only {
+		display: none;
+	}
+
 	.topbar {
 		gap: 10px;
 		padding: 0 8px;
@@ -728,6 +1007,8 @@ button {
 		inset: var(--topbar-h) 0 0 0 !important;
 		width: auto !important;
 		height: auto !important;
+		max-width: none !important;
+		max-height: none !important;
 		min-width: 0;
 		resize: none;
 		border: 0;

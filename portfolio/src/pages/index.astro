@@ -57,6 +57,11 @@ const contenido = {
 							</a>
 						</li>
 					))}
+					<li class="desktop-only">
+						<button class="menu-item" type="button" role="menuitem" id="reset-icons">
+							<Icon name="grid" size={16} /> Ordenar iconos
+						</button>
+					</li>
 					<li>
 						<button class="menu-item" type="button" role="menuitem" id="reboot">
 							<Icon name="power" size={16} /> Reiniciar
@@ -74,8 +79,8 @@ const contenido = {
 			</div>
 
 			<ul class="desktop-icons" aria-label="Aplicaciones">
-				{apps.map((app) => (
-					<li>
+				{apps.map((app, i) => (
+					<li style={`--i:${i}`}>
 						<button class="desk-icon" type="button" data-open={app.id}>
 							<span class="desk-icon-box"><Icon name={app.icono} size={26} /></span>
 							{app.nombre}
@@ -106,5 +111,11 @@ const contenido = {
 </Layout>
 
 <script>
-	import "../scripts/os";
+	import { closeStartMenu } from "../scripts/os";
+	import { resetIcons } from "../scripts/desktop-icons";
+
+	document.getElementById("reset-icons")?.addEventListener("click", () => {
+		resetIcons();
+		closeStartMenu();
+	});
 </script>

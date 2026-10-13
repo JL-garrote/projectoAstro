@@ -5,24 +5,24 @@ import Icon from "../Icon.astro";
 
 <div class="mail">
 	<form class="mail-form" id="contact-form" novalidate>
-		<div class="mail-row">
+		<div class="mail-row reveal" style="--i:0">
 			<span class="mail-key mono">Para:</span>
 			<span class="mail-to">{perfil.nombre}</span>
 		</div>
-		<label class="mail-row">
+		<label class="mail-row reveal" style="--i:1">
 			<span class="mail-key mono">De:</span>
 			<input name="from_name" type="text" placeholder="Tu nombre" required autocomplete="name" />
 		</label>
-		<label class="mail-row">
+		<label class="mail-row reveal" style="--i:2">
 			<span class="mail-key mono">Email:</span>
 			<input name="from_email" type="email" placeholder="tu@correo.com" required autocomplete="email" />
 		</label>
-		<label class="mail-body">
+		<label class="mail-body reveal" style="--i:3">
 			<span class="sr-only">Mensaje</span>
 			<textarea name="message" rows="8" placeholder="Cuéntame tu idea o propuesta..." required></textarea>
 		</label>
 
-		<div class="mail-actions">
+		<div class="mail-actions reveal" style="--i:4">
 			<p class="mail-status mono" id="contact-status" role="status" aria-live="polite">&gt; listo para enviar</p>
 			<button class="btn btn-primary" type="submit" id="contact-submit">
 				<Icon name="send" size={14} /> Enviar
@@ -30,7 +30,7 @@ import Icon from "../Icon.astro";
 		</div>
 	</form>
 
-	<aside class="mail-links">
+	<aside class="mail-links reveal" style="--i:5">
 		<span class="mono muted">También en:</span>
 		{redes.map((r) => (
 			<a href={r.href} target="_blank" rel="noopener noreferrer">
@@ -56,6 +56,9 @@ import Icon from "../Icon.astro";
 	function setStatus(text: string, state: "idle" | "busy" | "ok" | "error" = "idle") {
 		status.textContent = `> ${text}`;
 		status.dataset.state = state;
+		status.classList.remove("is-changing");
+		void status.offsetWidth;
+		status.classList.add("is-changing");
 	}
 
 	form.addEventListener("submit", async (e) => {
@@ -109,6 +112,8 @@ import Icon from "../Icon.astro";
 		flex: 1;
 	}
 	.mail-row {
+		position: relative;
+		transition: background 0.2s ease;
 		display: flex;
 		align-items: center;
 		gap: 12px;
@@ -151,8 +156,32 @@ import Icon from "../Icon.astro";
 		display: flex;
 		flex: 1;
 	}
+	/* Línea de foco que se extiende desde la izquierda */
+	.mail-row::after,
+	.mail-body::after {
+		content: "";
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -1px;
+		height: 1px;
+		background: var(--accent);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 0.35s var(--ease-out);
+	}
+	.mail-body {
+		position: relative;
+	}
+	.mail-row:focus-within::after,
+	.mail-body:focus-within::after {
+		transform: scaleX(1);
+	}
 	.mail-row:focus-within {
 		background: var(--hover);
+	}
+	.mail-key {
+		transition: color 0.2s ease;
 	}
 	.mail-row:focus-within .mail-key {
 		color: var(--accent);
@@ -169,6 +198,32 @@ import Icon from "../Icon.astro";
 		padding: 14px 20px;
 		border-top: 1px solid var(--line);
 		background: var(--bg-deep);
+	}
+	.mail-status.is-changing {
+		animation: status-in 0.35s var(--ease-out);
+	}
+	.mail-status[data-state="busy"]::after {
+		content: "";
+		display: inline-block;
+		width: 0.9em;
+		height: 0.9em;
+		margin-left: 8px;
+		vertical-align: -0.1em;
+		border: 1.5px solid currentColor;
+		border-right-color: transparent;
+		border-radius: 50%;
+		animation: spin 0.7s linear infinite;
+	}
+	@keyframes status-in {
+		from {
+			opacity: 0;
+			transform: translateX(-6px);
+		}
+	}
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
 	}
 	.mail-status {
 		margin: 0;
@@ -206,8 +261,12 @@ import Icon from "../Icon.astro";
 		gap: 6px;
 		color: var(--text-soft);
 		text-decoration: none;
+		transition:
+			color 0.2s ease,
+			transform 0.25s var(--ease-spring);
 	}
 	.mail-links a:hover {
+		transform: translateY(-2px);
 		color: var(--accent);
 	}
 

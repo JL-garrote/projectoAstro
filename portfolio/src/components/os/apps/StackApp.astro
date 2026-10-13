@@ -10,7 +10,7 @@ import { stack } from "../../../data/portfolio";
 	</div>
 
 	{stack.map((grupo, i) => (
-		<section class="proc">
+		<section class="proc reveal" style={`--i:${i * 2}`}>
 			<div class="proc-row mono">
 				<span class="pid">{String(1024 + i * 7)}</span>
 				<span class="proc-name">
@@ -18,13 +18,13 @@ import { stack } from "../../../data/portfolio";
 					<span class="muted">{grupo.proceso}</span>
 				</span>
 				<span class="col-load">
-					<span class="bar" aria-hidden="true"><span class="bar-fill" style={`--w:${grupo.nivel}%`}></span></span>
+					<span class="bar" aria-hidden="true"><span class="bar-fill" style={`--w:${grupo.nivel}%;--d:${i * 2}`}></span></span>
 					<span class="pct">{grupo.nivel}%</span>
 				</span>
 			</div>
 			<ul class="chips">
-				{grupo.items.map((t) => (
-					<li class="chip">
+				{grupo.items.map((t, c) => (
+					<li class="chip reveal" style={`--i:${i * 2 + 1 + c * 0.35}`}>
 						{t.devicon ? <i class={t.devicon} aria-hidden="true"></i> : <span class="chip-dot" aria-hidden="true"></span>}
 						{t.nombre}
 					</li>
@@ -99,7 +99,11 @@ import { stack } from "../../../data/portfolio";
 		width: var(--w);
 		background: repeating-linear-gradient(90deg, var(--accent) 0 6px, transparent 6px 8px);
 		transform-origin: left;
-		animation: fill 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+	}
+	/* Las barras se llenan solo al abrir la app, a la vez que su fila */
+	:global(.window.is-revealing) .bar-fill {
+		animation: fill 1.1s var(--ease-out) both;
+		animation-delay: calc(200ms + var(--d, 0) * 120ms);
 	}
 	.pct {
 		color: var(--accent);
@@ -123,6 +127,15 @@ import { stack } from "../../../data/portfolio";
 		background: var(--bg-deep);
 		font-size: 13px;
 		color: var(--text-soft);
+		transition:
+			border-color 0.2s ease,
+			color 0.2s ease,
+			transform 0.25s var(--ease-spring);
+	}
+	.chip:hover {
+		border-color: var(--accent-line);
+		color: var(--text);
+		transform: translateY(-2px);
 	}
 	.chip i {
 		font-size: 16px;

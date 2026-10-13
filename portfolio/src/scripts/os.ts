@@ -3,13 +3,17 @@ interface WinState {
 	open: boolean;
 	minimized: boolean;
 	maximized: boolean;
+	anim?: Animation;
+	revealTimer?: number;
 }
 
 const MOBILE = window.matchMedia("(max-width: 768px)");
+const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)");
 const DEFAULT_APP = "sobre-mi";
 const BOOT_KEY = "jlos-booted";
 const DOCK_SPACE = 80;
 const Z_MAX = 700; // por debajo del dock (800) y la barra superior (900)
+const EASE_OUT = "cubic-bezier(0.2, 0.8, 0.2, 1)";
 
 const windows = new Map<string, WinState>();
 let zTop = 10;
@@ -19,32 +23,109 @@ document.querySelectorAll<HTMLElement>(".window[data-app]").forEach((el) => {
 	windows.set(el.dataset.app!, { el, open: false, minimized: false, maximized: false });
 });
 
+const os = document.querySelector<HTMLElement>(".os")!;
 const desktop = document.getElementById("desktop")!;
 const activeLabel = document.getElementById("active-app")!;
 
-/* ── Geometría ─────────────────────────────────────────────── */
+/** Fuerza un reflow para poder reiniciar una animación CSS. */
+const restart = (el: HTMLElement, cls: string) => {
+	el.classList.remove(cls);
+	void el.offsetWidth;
+	el.classList.add(cls);
+};
 
-function workArea() {
-	const r = desktop.getBoundingClientRect();
-	return { top: r.top, left: r.left, width: r.width, height: r.height };
+/** Como animationend con once, pero ignorando las animaciones de los hijos (el evento burbujea). */
+function onOwnAnimationEnd(el: HTMLElement, fn: () => void) {
+	const handler = (e: AnimationEvent) => {
+		if (e.target !== el) return;
+		el.removeEventListener("animationend", handler);
+		fn();
+	};
+	el.addEventListener("animationend", handler);
+}
+
+/* ── Geometría: las ventanas nunca salen del escritorio ────── */
+
+/** Zona útil: todo el escritorio menos la franja del dock. */
+function bounds() {
+	return { width: desktop.clientWidth, height: desktop.clientHeight - DOCK_SPACE };
+}
+
+function clampPos(w: WinState, x: number, y: number) {
+	const b = bounds();
+	return {
+		left: Math.min(Math.max(x, 0), Math.max(0, b.width - w.el.offsetWidth)),
+		top: Math.min(Math.max(y, 0), Math.max(0, b.height - w.el.offsetHeight)),
+	};
+}
+
+/** Encoge, recoloca y limita el redimensionado para que la ventana quepa entera. */
+function fitWindow(w: WinState) {
+	if (MOBILE.matches || w.maximized || w.el.hidden) return;
+	const b = bounds();
+	const el = w.el;
+	el.style.maxWidth = el.style.maxHeight = "none";
+	if (el.offsetWidth > b.width) el.style.width = `${b.width}px`;
+	if (el.offsetHeight > b.height) el.style.height = `${b.height}px`;
+	const { left, top } = clampPos(w, el.offsetLeft, el.offsetTop);
+	el.style.left = `${left}px`;
+	el.style.top = `${top}px`;
+	// El tirador nativo de la esquina no puede llevarla más allá del borde
+	el.style.maxWidth = `${b.width - left}px`;
+	el.style.maxHeight = `${b.height - top}px`;
 }
 
 function placeWindow(w: WinState) {
-	const area = workArea();
-	const width = Math.min(Number(w.el.dataset.width), area.width - 32);
-	const height = Math.min(Number(w.el.dataset.height), area.height - DOCK_SPACE - 24);
+	const b = bounds();
+	const width = Math.min(Number(w.el.dataset.width), b.width - 32);
+	const height = Math.min(Number(w.el.dataset.height), b.height - 24);
 	const offset = (cascade++ % 6) * 28;
-	const left = Math.max(16, (area.width - width) / 2 - 80 + offset);
-	const top = Math.max(12, Math.min((area.height - DOCK_SPACE - height) / 2 + offset, area.height - DOCK_SPACE - height));
-	Object.assign(w.el.style, { width: `${width}px`, height: `${height}px`, left: `${left}px`, top: `${top}px` });
+	Object.assign(w.el.style, {
+		width: `${width}px`,
+		height: `${height}px`,
+		left: `${(b.width - width) / 2 - 80 + offset}px`,
+		top: `${(b.height - height) / 2 + offset}px`,
+	});
+	fitWindow(w);
 }
 
-function clampIntoView(w: WinState) {
-	const area = workArea();
-	const left = Math.min(Math.max(parseFloat(w.el.style.left) || 0, 80 - w.el.offsetWidth), area.width - 80);
-	const top = Math.min(Math.max(parseFloat(w.el.style.top) || 0, 0), area.height - 40);
-	w.el.style.left = `${left}px`;
-	w.el.style.top = `${top}px`;
+/* ── Animaciones con Web Animations API ────────────────────── */
+
+/** Transformación que lleva la ventana hasta su icono del dock (efecto «genie»). */
+function dockTransform(w: WinState) {
+	const btn = document.querySelector(`.dock-btn[data-launch="${w.el.dataset.app}"]`);
+	if (!btn || MOBILE.matches || REDUCED.matches) return null;
+	const r = w.el.getBoundingClientRect();
+	const d = btn.getBoundingClientRect();
+	const dx = d.left + d.width / 2 - (r.left + r.width / 2);
+	const dy = d.top + d.height / 2 - (r.top + r.height / 2);
+	return `translate(${dx}px, ${dy}px) scale(0.06)`;
+}
+
+/** FLIP: anima suavemente un cambio de tamaño/posición (maximizar y restaurar). */
+function animateGeometry(el: HTMLElement, change: () => void) {
+	const first = el.getBoundingClientRect();
+	change();
+	if (REDUCED.matches) return;
+	const last = el.getBoundingClientRect();
+	if (!last.width || !last.height) return;
+	el.animate(
+		[
+			{
+				transformOrigin: "top left",
+				transform: `translate(${first.left - last.left}px, ${first.top - last.top}px) scale(${first.width / last.width}, ${first.height / last.height})`,
+			},
+			{ transformOrigin: "top left", transform: "none" },
+		],
+		{ duration: 260, easing: EASE_OUT },
+	);
+}
+
+/** Escalona la entrada del contenido marcado con .reveal al abrir una app. */
+function reveal(w: WinState) {
+	clearTimeout(w.revealTimer);
+	restart(w.el, "is-revealing");
+	w.revealTimer = window.setTimeout(() => w.el.classList.remove("is-revealing"), 1600);
 }
 
 /* ── Estado de ventanas ────────────────────────────────────── */
@@ -72,7 +153,12 @@ function sync() {
 			b.classList.toggle("is-active", id === active);
 		});
 	});
-	activeLabel.textContent = active ? windows.get(active)!.el.getAttribute("aria-label") : "Escritorio";
+
+	const label = active ? windows.get(active)!.el.getAttribute("aria-label")! : "Escritorio";
+	if (activeLabel.textContent !== label) {
+		activeLabel.textContent = label;
+		restart(activeLabel, "is-swapping");
+	}
 	document.body.classList.toggle("has-app", active !== null);
 
 	const hash = active ? `#${active}` : "";
@@ -93,17 +179,39 @@ function focusWin(id: string) {
 	sync();
 }
 
+function bounceDock(id: string) {
+	const btn = document.querySelector<HTMLElement>(`.dock-btn[data-launch="${id}"]`);
+	if (btn) restart(btn, "is-bouncing");
+}
+
 export function openApp(id: string) {
 	const w = windows.get(id);
 	if (!w) return;
 	closeStartMenu();
+	w.anim?.cancel();
+
 	if (!w.open) {
+		// Apertura nueva: aparece con zoom y su contenido entra escalonado
 		w.open = true;
-		if (!MOBILE.matches) placeWindow(w);
+		w.el.hidden = false;
 		w.el.classList.remove("is-leaving");
-		w.el.classList.add("is-entering");
-		w.el.addEventListener("animationend", () => w.el.classList.remove("is-entering"), { once: true });
+		if (!MOBILE.matches) placeWindow(w);
+		restart(w.el, "is-entering");
+		onOwnAnimationEnd(w.el, () => w.el.classList.remove("is-entering"));
+		reveal(w);
+		bounceDock(id);
+	} else if (w.minimized) {
+		// Restaurar: sale del icono del dock
+		w.el.hidden = false;
+		const from = dockTransform(w);
+		if (from) {
+			w.anim = w.el.animate([{ transform: from, opacity: 0 }, { transform: "none", opacity: 1 }], {
+				duration: 340,
+				easing: EASE_OUT,
+			});
+		} else restart(w.el, "is-entering");
 	}
+
 	w.minimized = false;
 	w.el.hidden = false;
 	focusWin(id);
@@ -119,13 +227,14 @@ function hide(w: WinState, after: () => void) {
 		if (!w.open || w.minimized) w.el.hidden = true;
 		after();
 	};
-	if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) done();
-	else w.el.addEventListener("animationend", done, { once: true });
+	if (REDUCED.matches) done();
+	else onOwnAnimationEnd(w.el, done);
 }
 
 function closeApp(id: string) {
 	const w = windows.get(id);
 	if (!w || !w.open) return;
+	w.anim?.cancel();
 	w.open = false;
 	w.minimized = false;
 	w.maximized = false;
@@ -138,15 +247,32 @@ function minimizeApp(id: string) {
 	const w = windows.get(id);
 	if (!w || !w.open) return;
 	w.minimized = true;
-	hide(w, sync);
+	const to = dockTransform(w);
+	if (to) {
+		w.anim?.cancel();
+		w.anim = w.el.animate([{ transform: "none", opacity: 1 }, { transform: to, opacity: 0 }], {
+			duration: 320,
+			easing: "cubic-bezier(0.5, 0, 0.75, 0.4)",
+			fill: "forwards",
+		});
+		w.anim.onfinish = () => {
+			if (w.minimized) w.el.hidden = true;
+			w.anim?.cancel();
+			sync();
+		};
+	} else hide(w, sync);
 	sync();
 	refocus();
 }
 
 function toggleMaximize(id: string) {
 	const w = windows.get(id);
-	if (!w) return;
-	w.maximized = !w.maximized;
+	if (!w || MOBILE.matches) return;
+	animateGeometry(w.el, () => {
+		w.maximized = !w.maximized;
+		w.el.classList.toggle("is-maximized", w.maximized);
+		fitWindow(w);
+	});
 	focusWin(id);
 }
 
@@ -178,27 +304,30 @@ function enableDrag(w: WinState, id: string) {
 		startY = e.clientY;
 		originX = w.el.offsetLeft;
 		originY = w.el.offsetTop;
+		// Durante el arrastre el límite de tamaño no debe encoger la ventana
+		w.el.style.maxWidth = w.el.style.maxHeight = "none";
 		bar.setPointerCapture(e.pointerId);
 		w.el.classList.add("is-dragging");
 	});
 
 	bar.addEventListener("pointermove", (e) => {
 		if (!bar.hasPointerCapture(e.pointerId)) return;
-		w.el.style.left = `${originX + e.clientX - startX}px`;
-		w.el.style.top = `${Math.max(0, originY + e.clientY - startY)}px`;
+		const { left, top } = clampPos(w, originX + e.clientX - startX, originY + e.clientY - startY);
+		w.el.style.left = `${left}px`;
+		w.el.style.top = `${top}px`;
 	});
 
 	const stop = (e: PointerEvent) => {
 		if (!bar.hasPointerCapture(e.pointerId)) return;
 		bar.releasePointerCapture(e.pointerId);
 		w.el.classList.remove("is-dragging");
-		clampIntoView(w);
+		fitWindow(w);
 	};
 	bar.addEventListener("pointerup", stop);
 	bar.addEventListener("pointercancel", stop);
 
 	bar.addEventListener("dblclick", (e) => {
-		if (!MOBILE.matches && !(e.target as HTMLElement).closest("button")) toggleMaximize(id);
+		if (!(e.target as HTMLElement).closest("button")) toggleMaximize(id);
 	});
 }
 
@@ -226,15 +355,31 @@ windows.forEach((w, id) => {
 const startBtn = document.getElementById("start-btn")!;
 const startMenu = document.getElementById("start-menu")!;
 
-function closeStartMenu() {
-	startMenu.hidden = true;
+function openStartMenu() {
+	startMenu.classList.remove("is-closing");
+	startMenu.hidden = false;
+	startBtn.setAttribute("aria-expanded", "true");
+}
+
+export function closeStartMenu() {
+	if (startMenu.hidden || startMenu.classList.contains("is-closing")) return;
 	startBtn.setAttribute("aria-expanded", "false");
+	if (REDUCED.matches) {
+		startMenu.hidden = true;
+		return;
+	}
+	startMenu.classList.add("is-closing");
+	onOwnAnimationEnd(startMenu, () => {
+		if (!startMenu.classList.contains("is-closing")) return;
+		startMenu.classList.remove("is-closing");
+		startMenu.hidden = true;
+	});
 }
 
 startBtn.addEventListener("click", (e) => {
 	e.stopPropagation();
-	startMenu.hidden = !startMenu.hidden;
-	startBtn.setAttribute("aria-expanded", String(!startMenu.hidden));
+	if (startMenu.hidden || startMenu.classList.contains("is-closing")) openStartMenu();
+	else closeStartMenu();
 });
 
 document.addEventListener("click", (e) => {
@@ -259,7 +404,10 @@ window.addEventListener("hashchange", () => {
 	const id = location.hash.slice(1);
 	if (windows.has(id)) openApp(id);
 });
-window.addEventListener("resize", () => windows.forEach((w) => w.open && clampIntoView(w)));
+window.addEventListener("resize", () => windows.forEach((w) => w.open && fitWindow(w)));
+
+// Tras redimensionar con el tirador nativo, recalcula el límite restante
+windows.forEach((w) => w.el.addEventListener("pointerup", () => w.open && !w.el.classList.contains("is-dragging") && fitWindow(w)));
 
 /* ── Reloj ─────────────────────────────────────────────────── */
 
@@ -285,6 +433,8 @@ const BOOT_LINES = [
 ];
 
 function startDesktop() {
+	// Entrada escalonada de barra superior, iconos, fondo y dock
+	restart(os, "is-ready");
 	const fromHash = location.hash.slice(1);
 	if (windows.has(fromHash)) openApp(fromHash);
 	else if (!MOBILE.matches) openApp(DEFAULT_APP);
@@ -299,14 +449,14 @@ function boot(force = false) {
 		booted = sessionStorage.getItem(BOOT_KEY) === "1";
 	} catch {}
 
-	const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-	if ((booted || reduced) && !force) {
+	if ((booted || REDUCED.matches) && !force) {
 		screen.hidden = true;
 		startDesktop();
 		return;
 	}
 
 	windows.forEach((w, id) => w.open && closeApp(id));
+	os.classList.remove("is-ready");
 	log.textContent = "";
 	screen.hidden = false;
 	screen.classList.remove("is-done");
@@ -321,14 +471,18 @@ function boot(force = false) {
 			sessionStorage.setItem(BOOT_KEY, "1");
 		} catch {}
 		screen.classList.add("is-done");
-		setTimeout(() => (screen.hidden = true), 400);
+		setTimeout(() => (screen.hidden = true), 500);
 		document.removeEventListener("keydown", finish);
 		screen.removeEventListener("click", finish);
 		startDesktop();
 	};
 	const timer = setInterval(() => {
-		if (i < BOOT_LINES.length) log.textContent += BOOT_LINES[i++] + "\n";
-		else finish();
+		if (i < BOOT_LINES.length) {
+			const line = document.createElement("span");
+			line.className = "boot-line";
+			line.textContent = BOOT_LINES[i++];
+			log.appendChild(line);
+		} else finish();
 	}, 230);
 	document.addEventListener("keydown", finish);
 	screen.addEventListener("click", finish);
