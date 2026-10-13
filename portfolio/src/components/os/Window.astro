@@ -1,0 +1,43 @@
+---
+import type { App } from "../../data/portfolio";
+import Icon from "./Icon.astro";
+
+interface Props {
+	app: App;
+}
+
+const { app } = Astro.props;
+---
+
+<section
+	class="window"
+	id={`win-${app.id}`}
+	data-app={app.id}
+	data-width={app.ancho}
+	data-height={app.alto}
+	role="dialog"
+	aria-label={app.nombre}
+	hidden
+>
+	<header class="window-bar" data-drag>
+		<button class="win-back" type="button" data-action="close" aria-label="Volver al inicio">‹ Inicio</button>
+		<span class="window-title">
+			<Icon name={app.icono} size={14} />
+			{app.archivo}
+		</span>
+		<div class="window-controls">
+			<button type="button" data-action="minimize" aria-label="Minimizar">
+				<svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 5h8" stroke="currentColor" stroke-width="1.5" /></svg>
+			</button>
+			<button type="button" data-action="maximize" aria-label="Maximizar">
+				<svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><rect x="1.5" y="1.5" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.5" /></svg>
+			</button>
+			<button type="button" data-action="close" class="ctrl-close" aria-label="Cerrar">
+				<svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7" stroke="currentColor" stroke-width="1.5" /></svg>
+			</button>
+		</div>
+	</header>
+	<div class="window-body">
+		<slot />
+	</div>
+</section>

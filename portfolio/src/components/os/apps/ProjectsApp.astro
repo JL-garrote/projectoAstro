@@ -1,0 +1,280 @@
+---
+import { Image } from "astro:assets";
+import { proyectos } from "../../../data/portfolio";
+import Icon from "../Icon.astro";
+---
+
+<div class="explorer">
+	<nav class="explorer-side" aria-label="Proyectos">
+		<p class="side-title mono">~/proyectos</p>
+		<ul role="tablist">
+			{proyectos.map((p, i) => (
+				<li>
+					<button
+						type="button"
+						role="tab"
+						class="side-item"
+						id={`tab-${p.slug}`}
+						data-project={p.slug}
+						aria-selected={i === 0 ? "true" : "false"}
+						aria-controls={`panel-${p.slug}`}
+					>
+						<Icon name="folder" size={16} />
+						<span>{p.title}</span>
+					</button>
+				</li>
+			))}
+		</ul>
+		<p class="side-foot mono">{proyectos.length} elementos</p>
+	</nav>
+
+	<div class="explorer-main">
+		{proyectos.map((p, i) => (
+			<article
+				class="project"
+				id={`panel-${p.slug}`}
+				role="tabpanel"
+				aria-labelledby={`tab-${p.slug}`}
+				hidden={i !== 0}
+			>
+				<p class="path mono">~/proyectos/{p.slug}/README.md</p>
+
+				{p.image && (
+					<div class="project-shot">
+						<Image src={p.image} alt={`Captura de ${p.title}`} width={900} />
+						<span class="status-tag mono">{p.tagTop}</span>
+					</div>
+				)}
+
+				<h2 class="project-title">{p.title}</h2>
+				<dl class="meta mono">
+					<div><dt>Rol</dt><dd>{p.role}</dd></div>
+					<div><dt>Duración</dt><dd>{p.duration}</dd></div>
+				</dl>
+
+				<p class="desc">{p.description}</p>
+
+				<p class="section-label mono">Funcionalidades</p>
+				<ul class="arrow-list">
+					{p.features.map((f) => <li>{f}</li>)}
+				</ul>
+
+				<div class="challenge">
+					<p class="section-label mono">Reto técnico</p>
+					<p>{p.challenge}</p>
+				</div>
+
+				<p class="section-label mono">Stack</p>
+				<div class="tags">
+					{p.tags.map((t) => <span class="tag mono">{t}</span>)}
+				</div>
+
+				{(p.linkLive !== "#" || p.linkSource !== "#") && (
+					<div class="links">
+						{p.linkLive !== "#" && (
+							<a class="btn btn-primary" href={p.linkLive} target="_blank" rel="noopener noreferrer">
+								<Icon name="external" size={14} /> Ver proyecto
+							</a>
+						)}
+						{p.linkSource !== "#" && (
+							<a class="btn btn-ghost" href={p.linkSource} target="_blank" rel="noopener noreferrer">
+								<Icon name="github" size={14} /> Código
+							</a>
+						)}
+					</div>
+				)}
+			</article>
+		))}
+	</div>
+</div>
+
+<script>
+	const tabs = document.querySelectorAll<HTMLButtonElement>(".side-item[data-project]");
+
+	function selectProject(slug: string) {
+		tabs.forEach((tab) => {
+			const active = tab.dataset.project === slug;
+			tab.setAttribute("aria-selected", String(active));
+			const panel = document.getElementById(`panel-${tab.dataset.project}`);
+			if (panel) panel.hidden = !active;
+		});
+		document.querySelector("#win-proyectos .window-body")?.scrollTo({ top: 0 });
+		document.querySelector(".explorer-main")?.scrollTo({ top: 0 });
+	}
+
+	tabs.forEach((tab) => tab.addEventListener("click", () => selectProject(tab.dataset.project!)));
+
+	// La terminal puede pedir abrir un proyecto concreto
+	window.addEventListener("os:project", (e) => selectProject((e as CustomEvent<string>).detail));
+</script>
+
+<style>
+	.explorer {
+		display: grid;
+		grid-template-columns: 210px 1fr;
+		height: 100%;
+	}
+	.explorer-side {
+		border-right: 1px solid var(--line);
+		background: var(--bg-deep);
+		padding: 16px 10px;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		overflow-y: auto;
+	}
+	.side-title,
+	.side-foot {
+		font-size: 11px;
+		color: var(--muted);
+		margin: 0 8px;
+	}
+	.side-foot {
+		margin-top: auto;
+	}
+	.explorer-side ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 2px;
+	}
+	.side-item {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 9px 10px;
+		border: 1px solid transparent;
+		background: none;
+		color: var(--text-soft);
+		font: inherit;
+		font-size: 14px;
+		text-align: left;
+		cursor: pointer;
+	}
+	.side-item:hover {
+		background: var(--hover);
+		color: var(--text);
+	}
+	.side-item[aria-selected="true"] {
+		border-color: var(--accent-line);
+		background: var(--accent-soft);
+		color: var(--accent);
+	}
+	.explorer-main {
+		overflow-y: auto;
+		padding: 24px 28px 32px;
+	}
+	.path {
+		font-size: 12px;
+		color: var(--muted);
+		margin: 0 0 16px;
+	}
+	.project-shot {
+		position: relative;
+		border: 1px solid var(--line);
+		margin-bottom: 20px;
+	}
+	.project-shot img {
+		display: block;
+		width: 100%;
+		height: auto;
+		max-height: 320px;
+		object-fit: cover;
+		object-position: top;
+	}
+	.status-tag {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		font-size: 11px;
+		padding: 3px 8px;
+		background: var(--accent);
+		color: var(--on-accent);
+	}
+	.project-title {
+		font-size: 30px;
+		margin: 0 0 10px;
+		letter-spacing: -0.01em;
+	}
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px 24px;
+		margin: 0 0 18px;
+		font-size: 12px;
+	}
+	.meta div {
+		display: flex;
+		gap: 8px;
+	}
+	.meta dt {
+		color: var(--accent);
+	}
+	.meta dd {
+		margin: 0;
+		color: var(--text-soft);
+	}
+	.desc {
+		color: var(--text-soft);
+		margin: 0 0 22px;
+	}
+	.challenge {
+		border-left: 2px solid var(--accent);
+		background: var(--accent-soft);
+		padding: 12px 16px;
+		margin: 22px 0;
+	}
+	.challenge p:last-child {
+		margin: 0;
+		color: var(--text-soft);
+	}
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.tag {
+		font-size: 12px;
+		padding: 3px 8px;
+		border: 1px solid var(--line);
+		color: var(--text-soft);
+	}
+	.links {
+		display: flex;
+		gap: 12px;
+		flex-wrap: wrap;
+		margin-top: 24px;
+		padding-top: 20px;
+		border-top: 1px dashed var(--line);
+	}
+
+	@container (max-width: 620px) {
+		.explorer {
+			grid-template-columns: 1fr;
+			grid-template-rows: auto 1fr;
+		}
+		.explorer-side {
+			border-right: 0;
+			border-bottom: 1px solid var(--line);
+			padding: 10px;
+		}
+		.side-title,
+		.side-foot {
+			display: none;
+		}
+		.explorer-side ul {
+			display: flex;
+			overflow-x: auto;
+			gap: 6px;
+		}
+		.side-item {
+			white-space: nowrap;
+			width: auto;
+		}
+		.explorer-main {
+			padding: 18px 16px 28px;
+		}
+	}
+</style>
