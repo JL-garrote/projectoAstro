@@ -3,6 +3,7 @@ import voyagerImage from "../assets/voyager.jpg";
 import auraChatImage from "../assets/auraChat.jpg";
 import boardSyncImage from "../assets/boardSync.png";
 import passImage from "../assets/pass.png";
+import vinculoImage from "../assets/vinculo.png";
 
 export const perfil = {
 	nombre: "Juan Luis Gil Garrote",
@@ -205,7 +206,7 @@ export const proyectos: Proyecto[] = [
 		linkLive: "#",
 		image: passImage,
 		role: "Full Stack · En solitario",
-		duration: "En desarrollo actualmente",
+		duration: "2 semanas",
 		challenge:
 			"Analizar contraseñas con servicios externos sin exponerlas: k-anonymity con el hash SHA-1 para Have I Been Pwned y una estructura anónima (tipos y longitudes) como única información que recibe la IA.",
 		features: [
@@ -214,6 +215,28 @@ export const proyectos: Proyecto[] = [
 			"Detección de las 10.000 contraseñas más usadas",
 			"Comprobación de filtraciones con Have I Been Pwned (k-anonymity)",
 			"Consejos personalizados con IA a partir de una estructura anónima",
+		],
+	},
+	{
+		slug: "vinculo",
+		tagTop: "v1.1.0",
+		title: "Vínculo",
+		description:
+			"PRM (Personal Relationship Manager): un CRM para las personas que te importan. Te recuerda con quién hace tiempo que no hablas, cuál es el próximo paso con cada contacto y qué hablasteis la última vez, con un pipeline relacional tipo kanban para cultivar tu red con intención.",
+		tags: ["#Java", "#SpringBoot", "#Vue.js", "#MySQL", "#Docker"],
+		linkSource: "https://github.com/JL-garrote/vinculo",
+		linkLive: "#",
+		image: vinculoImage,
+		role: "Full Stack · En solitario",
+		duration: "2 semanas · en desarrollo",
+		challenge:
+			"Empaquetar base de datos, backend y frontend con Docker Compose para que toda la aplicación arranque con un solo comando, usando nginx como proxy de /api para no tener que configurar CORS.",
+		features: [
+			"Dashboard con indicadores y las relaciones que requieren atención, ordenadas por urgencia",
+			"Directorio de contactos con búsqueda, filtros y círculos con cadencia propia",
+			"Ficha 360° con interacciones, notas y recordatorios con recurrencia",
+			"Pipeline relacional kanban con arrastrar y soltar y aviso de acciones vencidas",
+			"Modo oscuro, diseño adaptable e instalable como app de escritorio (PWA)",
 		],
 	},
 ];
